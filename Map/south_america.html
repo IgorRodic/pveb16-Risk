@@ -29,12 +29,12 @@
             map = anychart.map();
 
             var dataSet_lat_long = anychart.data.set([
-              {lat: -547, long: -3200, name: "9", value: 321},
+              {lat: -547, long: -3200, name: 1, value: 321},
             ]);
 
             var btn = document.getElementById("click");
             btn.addEventListener("click", function(){
-                dataSet_lat_long.a[0].name = "10";
+                dataSet_lat_long.a[0].name ++;
                 map.marker(dataSet_lat_long);
                 
             });
