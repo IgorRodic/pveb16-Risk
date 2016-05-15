@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="js/anymap.min.js"></script>
+        
+        
+        <script src="south_america.js"></script>
+        
+        
+        <link rel="stylesheet" href="css/anychart-ui.min.css" />
+        
+        <title>South America Map</title>
+        <style>
+         html, body, #container {
+             width: 100%;
+             height: 100%;
+             margin: 0;
+             padding: 0;
+         }
+        </style>
+    </head>
+    <body>
+        <div id="container"></div>
+        <button id="click">Click</button>
+        <script type="text/javascript">
+
+
+         anychart.onDocumentReady(function() {
+            map = anychart.map();
+
+            var dataSet_lat_long = anychart.data.set([
+              {lat: -547, long: -3200, name: "9", value: 321},
+            ]);
+
+            var btn = document.getElementById("click");
+            btn.addEventListener("click", function(){
+                dataSet_lat_long.a[0].name = "10";
+                map.marker(dataSet_lat_long);
+                
+            });
+
+            var dataSet = anychart.data.set([
+              {'id':"0" , 'value' : 0 },
+              {'id':"1" , 'value' : 1 },
+              {'id':"2" , 'value' : 2 },
+              {'id':"3" , 'value' : 3 }
+            ]);
+
+            var series = map.choropleth(dataSet);
+            var series_lat_long = map.marker(dataSet_lat_long);
+
+            series.geoIdField('id');
+            series.colorScale(anychart.scales.linearColor('#deebf7', '#deebfb'));
+            series.hoverFill('#addd8e');
+            series.labels(false);
+
+            map.geoData(anychart.maps['south_america']);
+
+            map.container('container');
+            map.draw();
+        });
+
+
+
+        </script>
+    </body>
+</html>
