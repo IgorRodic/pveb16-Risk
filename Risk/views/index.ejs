@@ -1,28 +1,292 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title> Game of Risk </title>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="javascripts/anymap.min.js"></script>
+        <script src="javascripts/risk_map.js"></script>
 		<script src="javascripts/riskApp.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="colorpicker/css/colorpicker.css">
 		<link rel="stylesheet" href="stylesheets/style.css">
+        <link rel="stylesheet" href="stylesheets/animate.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/converse.css">
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <script type="text/javascript">
+            var socket = io();
+            var timeout1, timeout2;
+
+            $(document).ready(function(){
+                $("#chatButton").click(function(){
+                    $("#chat").slideToggle("slow");
+                    $("#chatHeader").slideToggle("slow");
+                });
+
+                var audioPlayer2 = document.getElementById('audio2'); 
+                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5100)
+
+                var audioPlayer3 = document.getElementById('audio3'); 
+                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7500)
+            });
+
+            function playSound() {
+                var audioPlayer1 = document.getElementById('audio1');
+                audioPlayer1.play();
+
+                var audioPlayer2 = document.getElementById('audio2'); 
+                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5100)
+
+                var audioPlayer3 = document.getElementById('audio3'); 
+                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7500)
+            }
+
+            function stopSound() {
+                var audioPlayer1 = document.getElementById('audio1');
+                audioPlayer1.pause();
+                audioPlayer1.currentTime = 0;
+
+                var audioPlayer2 = document.getElementById('audio2'); 
+                clearTimeout(timeout1);
+
+                var audioPlayer3 = document.getElementById('audio3'); 
+                clearTimeout(timeout2);
+            }
+
+            function submit(){
+                socket.emit('chat message', {
+                    user: $('#user').text(),
+                    text: $('#msg').val()
+                });
+                $('#msg').val('');
+                return false;
+            }
+
+            socket.on('chat message', function(text, user){
+                if (user == null)
+                {
+                    // User connected!
+                    $('#messages').append($('<li>').text(text));
+                    var chat = document.getElementById('chat');
+                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                }
+                else
+                {
+                    $('#messages').append($("<li><span class=\"im\">" + user.trim() + ": </span>" + text + "</li>"));
+                    var chat = document.getElementById('chat');
+                    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                }
+            });
+
+            function startGame() {
+                socket.emit('game started');
+            }
+
+            socket.on('game started', function(){
+                // Zapoceta igra
+            });
+        </script>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font: 13px Helvetica, Arial; background-color: black }
+            #chat { 
+                background-color: white;
+                border: 2px solid black; 
+                position: fixed; 
+                bottom: 50px; 
+                right: 0; 
+                width: 450px; 
+                height: 500px; 
+                max-height: 500px;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            #chatHeader { position: absolute; top: 0; width: 430px; align-content: center; }
+            #firstLi { list-style-type: none; background: red; text-align: center; }
+            #messages { list-style-type: none; margin: 0; padding: 0; overflow: scroll; }
+            #messages li { padding: 5px 10px; word-break: break-all; }
+            #messages li:nth-child(odd) { background: #eee; }
+            #form { background: #000; position: fixed; bottom: 50px; }
+            #form input { width: 403px; padding: 2px; }
+            #form button { background: red; padding: 2px; }
+            .navbar { background-color: red; }
+            .im { color: red; } /* Korisnikova boja */
+            #chatButton { position: fixed; bottom: 0; right: 0; width: 200px; height: 50px; }
+            #chatButton:hover { background-color: #C0C0C0; }
+            #container { position: fixed; top: 0; right: 0; width: 1000px; height: 1000px; }
+        </style>
 	</head>
 	<body ng-app="riskApp">
+        <!-- Navigation bar -->
 		<div id='main' class="container">
-			<nav class="navbar-fluid navbar-default navbar-fixed-top">
+			<nav class="navbar navbar-fluid navbar-default navbar-fixed-top">
 				<div class="container">
-				    <a class="navbar-brand" href="#"> Risk </a>
-				    <p class="navbar-text"> Play a game of Risk! </p>
-				    <p class="navbar-right navbar-text" ng-hide="authenticated"><a href="#/login"> Login </a> or <a href="#/register"> Register </a></p>
-				    <p class="navbar-right navbar-text" ng-show="authenticated"><a href="#" ng-click="signout()"> Logout </a></p>
-				    <p class="navbar-right navbar-text" ng-show="authenticated"> Signed in as {{current_user}} </p>		
+				    <a class="navbar-brand" href="#" onclick="playSound();" style="color: white;"> Risk </a>
+				    <p class="navbar-text" style="color: white;" > Play a game of Risk! </p>
+				    <p class="navbar-right navbar-text" ng-hide="authenticated" style="color: black;"><a href="#/login" onclick="stopSound();" style="color: white;"> Log in </a> or <a href="#/register" onclick="stopSound();" style="color: white;"> Register </a></p>
+				    <p class="navbar-right navbar-text" ng-show="authenticated"><a href="#" onclick="playSound();" ng-click="signout()" style="color: white;"> Logout </a></p>
+				    <p class="navbar-right navbar-text" ng-show="authenticated" style="color: white;"> Signed in as {{current_user}} </p>		
 				</div>
 			</nav>
-			<div class="col-md-offset-2 col-md-8">
-				<div ng-view>
-				</div>
-			</div>
 		</div>
-	</body>
+
+        <!-- Zvuk -->
+        <audio id="audio1" autoplay="true">
+            <source src="sounds/Humvee-Stephan_Schutze.wav" type="audio/wav">
+        </audio>
+        <audio id="audio2">
+            <source src="sounds/Mortar-Round.wav" type="audio/wav">
+        </audio>
+        <audio id="audio3">
+            <source src="sounds/Swords_Collide.wav" type="audio/wav">
+        </audio>
+
+        <!-- Partial view -->
+        <div class="col-md-offset-2 col-md-8">
+            <div ng-view>
+            </div>
+        </div>
+
+        <!-- Samo kad je na map stranici -->
+        <!-- <div id="container" ng-show="authenticated"></div> -->
+
+        <!-- Chat -->
+        <div id="chat" ng-show="authenticated">
+            <ul id="chatHeader">
+                <li id="firstLi">
+                    Game of Risk chat! Have fun!
+                </li>
+            </ul>
+            <ul id="messages">
+                <li> </li>
+            </ul>
+            <div id="form">
+                <input id="msg" autocomplete="off" onkeydown="if (event.keyCode == 13) document.getElementById('btnSend').click()" />
+                <p id="user" hidden="true"> {{current_user}} </p>
+                <button id="btnSend" onclick="submit()"> Send </button>
+            </div>
+        </div>
+
+        <!-- Bottom navigation bar -->
+        <div id='main' class="container2" ng-show="authenticated">
+            <nav class="navbar navbar-fluid navbar-default navbar-fixed-bottom">
+                <div class="container">  
+                    <!-- Chat button -->
+                    <button id="chatButton" class="btn btn-default"> Chat </button>
+                </div>
+            </nav>
+        </div>
+
+        <script type="text/javascript">
+        anychart.onDocumentReady(function() {
+            var data = anychart.data.set([    
+                {  points: [   -7.158523106832249   ,  70.02038088034011 ,    -2.77566619288671 ,   69.86196436537823 ]},   
+                {  points: [   -7.911001552901207   ,  64.67382350037644 ,    -2.439031098592698,  68.20519164640183 ]},   
+                {  points: [   -0.769057003369475   ,  62.23156889471402 ,    -0.663445993394884,  67.11607810603887 ]},   
+                {  points: [   -4.623858867442038   ,  56.76619912852897 ,    -11.38296350581588,  61.17545879496815 ]},   
+                {  points: [    5.679815293204016   ,  53.690278463019006 ,    1.514781087331075,   56.62098398981391  ]},   
+                {  points: [   21.44885922003515   ,   77.18212749424214 , 29.105657443193028 ,   71.9147783717594 ]},   
+                {  points: [  20.498360130263816   ,   66.0137631894291  ,    18.333334425784695 ,  73.08970085772671 ]},   
+                {  points: [   8.900951097429031   ,   15.63731143154902  ,    9.67323160786823 ,   17.333688279265893 ]},   
+                {  points: [    -1.161797946712465   , 16.911244239367527 ,    -7.940704649456539 ,  20.47231548194827 ]},   
+                {  points: [    -13.930829121452891   ,13.551493984550849 ,    -12.845015925151626 ,17.868344017262267 ]},   
+                {  points: [    -3.18160851247654   ,  -26.13514335746349  ,  3.980138101425415 , -13.310006333674092  ]},   
+                {  points: [   24.13203894220208   ,   9.475569068343914 , 23.735997654797362 ,  9.865009667625218  ]},   
+                {  points: [   21.35479941427657   ,   5.845190600467433 , 18.902643776429034 ,   5.78908475141843  ]},   
+                {  points: [  24.23930012420758   ,    0.98048345351283 ,    21.67823313232375 ,   -0.78850096356157 ]},   
+                {  points: [    21.387802854893618   , -7.613612483169515  ,    20.252484497666764 , -7.481598720701276  ]},   
+                {  points: [    30.523155217695756   , -8.438698498596018  ,    29.480246494196663 , -8.267080607387308  ]},   
+                {  points: [    33.401055239503364   , -6.484894814066079  ,    31.948903852352736 , -3.923827822182249  ]},   
+                {  points: [     43.2888860483744   ,  -14.445324690900865 ,    43.97535761320925 ,  1.105896527857645 ]},   
+                {  points: [    36.49677796938353   ,  -2.432072306291158 ,    32.78059055590261 ,  -3.171349376113294 ]},   
+                {  points: [    36.93242338552872   ,  -9.065763870320144 ,    41.88293947808766 ,  -14.43872400277745 ]},   
+                {  points: [    36.091928856382424   , -7.351781733558264  ,    37.0558572896513 ,   -3.191669547871557 ]},   
+                {  points: [    46.263910481140776   , -20.61848095986404  ,    43.422858256769366 , -16.35690262330693  ]},   
+                {  points: [   43.422858256769715   ,  99.72037397243889  ,    43.422858256769715 , 104.18488461073683  ]},   
+                {  points: [     42.96626057785289   , -100.06647709139342 ,    42.96626057785289 ,  -103.7699915981633 ]},   
+                {  points: [    54.40656908849134   ,  -45.74403656914904 ,    50.944036690038686 , -50.39879624032898  ]},   
+                {  points: [    34.8743350459379   ,   -40.93707767166348 ,    40.25204104206949 , -34.443244015957404 ]},   
+                {  points: [    37.05110106382979   ,  -58.40035348162473 ,    52.45334568423598 ,  -38.81104472920696 ]}
+            ]);
+
+            map = anychart.map();
+
+            var series_connector = map.connector(data);
+            series_connector.curvature(0.15);
+            series_connector.markers({ size: 0});
+            series_connector.hoverMarkers({size: 0});
+            series_connector.selectMarkers({size: 0});
+            // var dataSet_lat_long = anychart.data.set([
+            //   {lat: -547, long: -3200, name: 1, value: 321},
+            // ]);
+
+            // var btn = document.getElementById("click");
+            // btn.addEventListener("click", function(){
+            //     dataSet_lat_long.a[0].name ++;
+            //     map.marker(dataSet_lat_long);
+                
+            // });
+
+            var dataSet = anychart.data.set([
+                {"id": "AU.WA"},
+                {"id": "AU.EA"},
+                {"id": "AF.MA"},
+                {"id": "AF.EG"},
+                {"id": "AF.EA"},
+                {"id": "AF.SA"},
+                {"id": "AF.CO"},
+                {"id": "AF.NA"},
+                {"id": "AS.UR"},
+                {"id": "AS.SI"},
+                {"id": "AS.YA"},
+                {"id": "AS.KA"},
+                {"id": "AS.IR"},
+                {"id": "AS.CH"},
+                {"id": "AS.MO"},
+                {"id": "AS.SA"},
+                {"id": "AS.AF"},
+                {"id": "AS.IN"},
+                {"id": "AS.ME"},
+                {"id": "EU.GB"},
+                {"id": "EU.IC"},
+                {"id": "EU.SC"},
+                {"id": "EU.WE"},
+                {"id": "EU.SE"},
+                {"id": "EU.RU"},
+                {"id": "EU.CE"},
+                {"id": "AS.JA"},
+                {"id": "AU.NG"},
+                {"id": "NA.QU"},
+                {"id": "NA.ON"},
+                {"id": "NA.CA"},
+                {"id": "NA.WUS"},
+                {"id": "NA.EUS"},
+                {"id": "NA.ALB"},
+                {"id": "NA.GR"},
+                {"id": "NA.ALA"},
+                {"id": "NA.NT"},
+                {"id": "AU.IN"},
+                {"id": "SA.AR"},
+                {"id": "SA.BR"},
+                {"id": "SA.PE"},
+                {"id": "SA.VE"}
+            ]);
+
+            var series = map.choropleth(dataSet);
+            //var series_lat_long = map.marker(dataSet_lat_long);
+
+            series.geoIdField('id');
+            //series.colorScale(anychart.scales.linearColor('#deebf7', '#deebfb'));
+            series.hoverFill('#addd8e');
+            series.labels(false);
+
+            map.geoData(anychart.maps['risk_map']);
+
+            map.container('container');
+            map.draw();
+        });
+        </script>
+    </body>
 </html>

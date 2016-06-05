@@ -1,6 +1,7 @@
 var app = angular.module('riskApp', ['ngRoute', 'ngResource']).run(function($rootScope) {
 	$rootScope.authenticated = false;
 	$rootScope.current_user = '';
+  $rootScope.users = [];
 	
 	$rootScope.signout = function(){
       $rootScope.authenticated = false;
@@ -26,18 +27,28 @@ app.config(function($routeProvider){
 			templateUrl: 'register.html',
 			controller: 'authController'
 		})
+    .when('/game_prep', {
+      templateUrl: 'game_prep.html',
+      controller: 'gamePrepController'
+    })
     .when('/map', {
       templateUrl: 'map.html',
       controller: 'mapController'
     });
 });
 
-app.controller('mainController', function($scope){
+app.controller('mainController', function($scope, $rootScope, $location){
 	// Home page controller
 });
 
-app.controller('mapController', function($scope){
-  // Map controller
+app.controller('gamePrepController', function($scope, $rootScope, $location){
+  if ($rootScope.authenticated != true)
+    $location.path('/login');
+});
+
+app.controller('mapController', function($scope, $rootScope, $location){
+  if ($rootScope.authenticated != true)
+    $location.path('/login');
 });
 
 app.controller('authController', function($scope, $http, $rootScope, $location){
@@ -51,7 +62,7 @@ app.controller('authController', function($scope, $http, $rootScope, $location){
       {
         $rootScope.authenticated = true;
         $rootScope.current_user = data.user.username;
-        $location.path('/map');
+        $location.path('/game_prep');
       }
       else
         $scope.error_message = data.message;
@@ -65,7 +76,7 @@ app.controller('authController', function($scope, $http, $rootScope, $location){
       {
         $rootScope.authenticated = true;
         $rootScope.current_user = data.user.username;
-        $location.path('/map');
+        $location.path('/game_prep');
       }
       else
         $scope.error_message = data.message;

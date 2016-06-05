@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Game of Risk </title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.js"></script>
+		<script src="javascripts/converse.js"></script>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <script>
+            var socket = io();
+        </script>
+		<script src="javascripts/riskApp.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/style.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/converse.css">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font: 13px Helvetica, Arial; }
+          form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+          form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+          form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+          #messages { list-style-type: none; margin: 0; padding: 0; }
+          #messages li { padding: 5px 10px; }
+          #messages li:nth-child(odd) { background: #eee; }
+        </style>
+	</head>
+	<body ng-app="riskApp">
+		<div id='main' class="container">
+			<nav class="navbar-fluid navbar-default navbar-fixed-top">
+				<div class="container">
+				    <a class="navbar-brand" href="#"> Risk </a>
+				    <p class="navbar-text"> Play a game of Risk! </p>
+				    <p class="navbar-right navbar-text" ng-hide="authenticated"><a href="#/login"> Login </a> or <a href="#/register"> Register </a></p>
+				    <p class="navbar-right navbar-text" ng-show="authenticated"><a href="#" ng-click="signout()"> Logout </a></p>
+				    <p class="navbar-right navbar-text" ng-show="authenticated"> Signed in as {{current_user}} </p>		
+				</div>
+			</nav>
+			<div class="col-md-offset-2 col-md-8">
+				<div ng-view>
+				</div>
+			</div>
+		</div>
+        <ul id="messages"></ul>
+        <form action="">
+          <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
+    </body>
+    <script>
+	    require(['converse'], function (converse) {
+	        (function () {
+	            var $ = converse.env.jQuery;
+	            $.extend( $.easing, {
+	                easeInOutExpo: function (x, t, b, c, d) {
+	                    if (t==0) return b;
+	                    if (t==d) return b+c;
+	                    if ((t/=d/2) < 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b;
+	                    return c/2 * (-Math.pow(2, -10 * --t) + 2) + b;
+	                },
+	            });
+
+	            $(window).scroll(function() {
+	                if ($(".navbar").offset().top > 50) {
+	                    $(".navbar-fixed-top").addClass("top-nav-collapse");
+	                } else {
+	                    $(".navbar-fixed-top").removeClass("top-nav-collapse");
+	                }
+	            });
+	            
+	            $('.page-scroll a').bind('click', function(event) {
+	                var $anchor = $(this);
+	                $('html, body').stop().animate({
+	                    scrollTop: $($anchor.attr('href')).offset().top
+	                }, 700, 'easeInOutExpo');
+	                event.preventDefault();
+	            });
+	        })();
+	        // Public chat server jabber.epow0.org
+	        // igor@jabber.epow0.org igor93
+	        // sula@jabber.epow0.org sula93
+	        // converse.initialize({
+	        //     allow_otr: true,
+	        //     auto_list_rooms: false,
+	        //     auto_subscribe: false,
+	        //     bosh_service_url: 'https://conversejs.org/http-bind/',
+	        //     hide_muc_server: false,
+	        //     i18n: locales['en'],
+	        //     keepalive: true,
+	        //     play_sounds: true,
+	        //     roster_groups: true,
+	        //     show_controlbox_by_default: true,
+	        //     xhr_user_search: false
+	        // });
+	    });
+	</script>
+</html>

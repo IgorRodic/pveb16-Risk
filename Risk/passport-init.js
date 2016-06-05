@@ -7,13 +7,13 @@ module.exports = function(passport){
 
 	// Serijalizacija i deserijalizacija korisnika
 	passport.serializeUser(function(user, done) {
-		console.log('serializing user:',user.username);
+		//console.log('serializing user:', user.username);
 		done(null, user._id);
 	});
 
 	passport.deserializeUser(function(id, done) {
 		User.findById(id, function(err, user) {
-			console.log('deserializing user:',user.username);
+			//console.log('deserializing user:', user.username);
 			done(err, user);
 		});
 	});
@@ -94,5 +94,4 @@ module.exports = function(passport){
 	var createHash = function(password){
 		return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 	};
-
 };

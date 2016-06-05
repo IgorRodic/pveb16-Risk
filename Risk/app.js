@@ -10,10 +10,34 @@ var passport = require('passport');
 require('./models/models');
 var index = require('./routes/index');
 var map = require('./routes/map');
+var game_prep = require('./routes/game_prep');
 var authenticate = require('./routes/authenticate')(passport);
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/risk');       
+
 var app = express();
+var serv = require('http').Server(app);
+
+serv.listen(3000, function(){
+    console.log("Server started, listening at *:3000...");
+});
+
+var io = require('socket.io')(serv, {});
+io.on('connection', function(socket){
+  io.emit('chat message', "User connected!");
+
+  socket.on('chat message', function(){
+    io.emit('connect', "User disconnected!");
+  });
+  
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg.text, msg.user);
+  });
+
+  socket.on('game started', function(){
+    io.emit('game started');
+  });
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -22,7 +46,7 @@ app.set('view engine', 'ejs');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(session({
-  secret: 'velika tajna'
+ secret: 'velika tajna'
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -33,6 +57,7 @@ app.use(passport.session());
 
 app.use('/', index);
 app.use('/auth', authenticate);
+app.use('/game_prep', game_prep);
 app.use('/map', map);
 
 // Hvatanje greske 404
@@ -65,6 +90,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;
