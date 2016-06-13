@@ -1,4 +1,4 @@
-var app = angular.module('riskApp', ['ngRoute', 'ngResource']).run(function($rootScope) {
+var app = angular.module('riskApp', ['ngRoute', 'ngResource']).run(function($rootScope, $http) {
 	$rootScope.authenticated = false;
 	$rootScope.current_user = '';
   $rootScope.users = [];
@@ -38,22 +38,27 @@ app.config(function($routeProvider){
 });
 
 app.controller('mainController', function($scope, $rootScope, $location){
-	// Home page controller
+  $rootScope.currentPath = $location.path();
 });
 
 app.controller('gamePrepController', function($scope, $rootScope, $location){
   if ($rootScope.authenticated != true)
     $location.path('/login');
+
+  $rootScope.currentPath = $location.path();
 });
 
 app.controller('mapController', function($scope, $rootScope, $location){
   if ($rootScope.authenticated != true)
     $location.path('/login');
+
+  $rootScope.currentPath = $location.path();
 });
 
 app.controller('authController', function($scope, $http, $rootScope, $location){
   $scope.user = { username: '', password: '' };
   $scope.error_message = '';
+  $rootScope.currentPath = $location.path();
 
   // Funkcija koja reaguje na pritisak dugmeta Log in
   $scope.login = function(){

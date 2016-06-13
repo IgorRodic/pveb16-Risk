@@ -1,17 +1,19 @@
 <div class="clearfix" ng-show="authenticated">
 	<div style="height: 50px; background-color: rgba(245, 245, 245, 0.2); color: white; border-radius: 20px; border: 3px solid white;">
-		<span style="margin-left: 50px; font-size: 30px;"> Players </span>
-		<span style="margin-left: 675px; font-size: 30px;"> Start game </span>
+		<span class="col-md-3 col-md-offset-3" style="font-size: 30px;"> Players online </span>
+		<span class="col-md-3 pull-right" style="font-size: 30px;"> Start game </span>
 	</div>
 	<form class="jumbotron" style="background-color: rgba(245, 245, 245, 0.2); color: white; border-radius: 20px; border: 3px solid white; margin-top: 50px; margin: 1em auto;">
 		<fieldset class="form-group">
-			<input type="text" class="form-control prviIgrac" style="width: 65%; height: 20%; margin-left:35px; background-color: blue; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" value="{{users[0]}}" disabled="true">
-			<input class="checkbox" style="width: 30px; height: 30px;">
+			<input type="text" id="player1" class="form-control prviIgrac" value="" style="width: 65%; height: 20%; margin-left:35px; background-color: blue; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" disabled="true">
+			<input id="cb1" type="checkbox">
 		</fieldset>
 		<fieldset class="form-group">
-			<input type="text" class="form-control drugiIgrac" style="width: 65%; height: 20%; margin-left:35px; background-color: green; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" value="{{users[1]}}" disabled="true">
-			<input class="checkbox" style="width: 30px; height: 30px;">
+			<input type="text" id="player2" class="form-control drugiIgrac" value="" style="width: 65%; height: 20%; margin-left:35px; background-color: green; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" disabled="true">
+			<input id="cb2" type="checkbox">
 		</fieldset>
 	</form>
-	<a href="#/map" class="btn btn-primary btn-lg col-md-3 col-md-offset-4" style="background-color: red; border-color: white; margin-top: 100px;"> Start Game! </a>
+	<button onclick="startGame()" id="startButton" class="btn btn-primary btn-lg col-md-3 col-md-offset-4"> Start Game! </button>
+	<div id="gamePrepInfo" class="col-md-11" style="margin-top: 100px; text-align: center; font-size: 50px; color: white;">
+	</div>
 </div>

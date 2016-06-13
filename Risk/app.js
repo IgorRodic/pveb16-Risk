@@ -23,15 +23,40 @@ serv.listen(3000, function(){
 });
 
 var io = require('socket.io')(serv, {});
-io.on('connection', function(socket){
-  io.emit('chat message', "User connected!");
+var socket_list = [];
+var player_list = [];
 
-  socket.on('chat message', function(){
-    io.emit('connect', "User disconnected!");
+var Player = function(id1, name1, goal1){
+  var self = {
+    id: id1,
+    name: name1, 
+    goal: goal1
+  }
+
+  return self;
+}
+
+io.on('connection', function(socket){
+  socket.id = parseInt(Math.random() * 1000);
+  socket_list[socket.id] = socket;
+  var player = Player(socket.id, '', '');
+  player_list[socket.id] = player;
+
+  io.emit('chat message', "User connected!", socket.id);
+
+  socket.on('disconnect', function(){
+    delete socket_list[socket.id];
+    delete player_list[socket.id];
+    io.emit('disconnect', "User disconnected!");
   });
   
   socket.on('chat message', function(msg){
     io.emit('chat message', msg.text, msg.user);
+  });
+
+  socket.on('set user name', function(msg){
+    player_list[msg.id].name = msg.user;
+    io.emit('player names', player_list);
   });
 
   socket.on('game started', function(){

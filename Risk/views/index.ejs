@@ -10,14 +10,15 @@
         <script src="javascripts/risk_map.js"></script>
 		<script src="javascripts/riskApp.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="colorpicker/css/colorpicker.css">
 		<link rel="stylesheet" href="stylesheets/style.css">
         <link rel="stylesheet" href="stylesheets/animate.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/converse.css">
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <script type="text/javascript">
             var socket = io();
-            var timeout1, timeout2;
+            var timeout1, timeout2, timeout3, interval1, interval2;
+            var id, i = 10;
+            var player_list = [];
 
             $(document).ready(function(){
                 $("#chatButton").click(function(){
@@ -26,10 +27,22 @@
                 });
 
                 var audioPlayer2 = document.getElementById('audio2'); 
-                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5100)
+                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5200)
 
                 var audioPlayer3 = document.getElementById('audio3'); 
-                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7500)
+                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7600)
+
+                // Postavljanje imena igraca
+                interval1 = setInterval(function() {
+                    if (window.location.href == 'http://localhost:3000/#/game_prep')
+                    {
+                        console.log(id);
+                        socket.emit('set user name', {
+                            user: $('#user').text(),
+                            id: id
+                        });
+                    }
+                }, 100);
             });
 
             function playSound() {
@@ -37,10 +50,10 @@
                 audioPlayer1.play();
 
                 var audioPlayer2 = document.getElementById('audio2'); 
-                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5100)
+                timeout1 = setTimeout(function() { audioPlayer2.play(); }, 5200)
 
                 var audioPlayer3 = document.getElementById('audio3'); 
-                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7500)
+                timeout2 = setTimeout(function() { audioPlayer3.play(); }, 7600)
             }
 
             function stopSound() {
@@ -64,13 +77,21 @@
                 return false;
             }
 
+            socket.on('disconnect', function(text){
+                $('#messages').append($('<li>').text(text));
+                var chat = document.getElementById('chat');
+                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+            });
+
             socket.on('chat message', function(text, user){
-                if (user == null)
+                if (typeof user === 'number')
                 {
-                    // User connected!
+                    // User connected / disconnected
                     $('#messages').append($('<li>').text(text));
                     var chat = document.getElementById('chat');
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+                    id = user;
+                    console.log(id);
                 }
                 else
                 {
@@ -80,13 +101,56 @@
                 }
             });
 
+            socket.on('player names', function(data){
+                player_list = data;
+                console.log(player_list[id]);
+
+                for (var i = 0; i < 1000; i++) {
+                    if (player_list[i] != undefined)
+                    {
+                        if (document.getElementById("player1").value == '' && document.getElementById("player2").value != player_list[i].name.trim())
+                            document.getElementById("player1").value = player_list[i].name.trim();
+                        else if (document.getElementById("player2").value == '' && document.getElementById("player1").value != player_list[i].name.trim())
+                            document.getElementById("player2").value = player_list[i].name.trim();
+                        else
+                            clearInterval(interval1);
+                    }
+                }
+            });
+
             function startGame() {
-                socket.emit('game started');
+                if (document.getElementById('cb1').checked && 
+                    document.getElementById('cb2').checked)
+                {
+                    document.getElementById('startButton').disabled = true;
+                    timeout3 = setTimeout(function() { window.location.href = 'http://localhost:3000/#/map'; }, 13500);
+                    interval2 = setInterval(function() { 
+                        document.getElementById('gamePrepInfo').innerHTML = i;
+                        var audioPlayer4 = document.getElementById('audio4');
+                        audioPlayer4.play();
+                        if (i == 0)
+                        {
+                            clearInterval(interval2);
+                            document.getElementById('gamePrepInfo').innerHTML = "The game will begin shortly, have fun!";
+                        }
+                        i--; 
+                    }, 1000);
+                }
+                else
+                    document.getElementById('gamePrepInfo').innerHTML = "All players are not ready!";
             }
 
-            socket.on('game started', function(){
-                // Zapoceta igra
-            });
+            function placeTank() {
+                console.log('placed tank');
+            }
+
+            function attack() {
+                console.log('attack');
+            }
+
+            function removeTank() {
+                console.log('removed tank');
+            }
         </script>
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -108,14 +172,43 @@
             #messages { list-style-type: none; margin: 0; padding: 0; overflow: scroll; }
             #messages li { padding: 5px 10px; word-break: break-all; }
             #messages li:nth-child(odd) { background: #eee; }
-            #form { background: #000; position: fixed; bottom: 50px; }
+            #form { background: #000; position: fixed; bottom: 49px; }
             #form input { width: 403px; padding: 2px; }
             #form button { background: red; padding: 2px; }
             .navbar { background-color: red; }
             .im { color: red; } /* Korisnikova boja */
-            #chatButton { position: fixed; bottom: 0; right: 0; width: 200px; height: 50px; }
-            #chatButton:hover { background-color: #C0C0C0; }
-            #container { position: fixed; top: 0; right: 0; width: 1000px; height: 1000px; }
+            #chatButton { position: fixed; bottom: 0; right: 0; width: 200px; height: 49px; }
+            #chatButton:hover { background-color: #0099ff; }
+            #placeTankButton { margin-top: 5px; margin-left: -150px; }
+            #removeTankButton { margin-top: 5px; }
+            #attackButton { margin-top: 5px; }
+            #placeTankButton:hover, #attackButton:hover, #removeTankButton:hover { background-color: orange; }
+            #container { 
+                position: fixed; 
+                top: 0; 
+                right: 0; 
+                width: 1000px; 
+                height: 1000px; 
+                -webkit-animation-delay: 0.5s;
+                -webkit-animation-duration: 3s; 
+                -vendor-animation-delay: 0.5s; 
+                -vendor-animation-duration: 3s;
+                -moz-animation-delay: 0.5s;
+                -moz-animation-duration: 3s;
+            }
+            #startButton { background-color: red; border-color: white; margin-top: 100px; }
+            #logInButton, #registerButton { background-color: red; border-color: white; }
+            #logInButton:hover, #startButton:hover, #registerButton:hover, #loginLink:hover, #registerLink:hover { background-color: #ff4d4d; }
+            #cb1, #cb2 {
+                -moz-appearance: none; 
+                -webkit-appearance: none; 
+                -vendor-appearance: none; 
+                width: 30px; 
+                height: 30px; 
+                background: white; 
+                border-radius: 5px; 
+                border: 2px solid #555;
+            }
         </style>
 	</head>
 	<body ng-app="riskApp">
@@ -124,10 +217,12 @@
 			<nav class="navbar navbar-fluid navbar-default navbar-fixed-top">
 				<div class="container">
 				    <a class="navbar-brand" href="#" onclick="playSound();" style="color: white;"> Risk </a>
-				    <p class="navbar-text" style="color: white;" > Play a game of Risk! </p>
+				    <p class="navbar-text" ng-show="!authenticated" style="color: white;" > Play a game of Risk! </p>
+                    <a class="navbar-text" ng-show="authenticated" href="#/map" onclick="stopSound();" style="color: white;"> Back to the game! </a>
+                    <p class="navbar-brand" ng-show="currentPath == '/map'" style="position: fixed; width: 740px; margin-left: 200px; text-align: center; color: white; background-color: black;"> MISIJA! </p>
 				    <p class="navbar-right navbar-text" ng-hide="authenticated" style="color: black;"><a href="#/login" onclick="stopSound();" style="color: white;"> Log in </a> or <a href="#/register" onclick="stopSound();" style="color: white;"> Register </a></p>
 				    <p class="navbar-right navbar-text" ng-show="authenticated"><a href="#" onclick="playSound();" ng-click="signout()" style="color: white;"> Logout </a></p>
-				    <p class="navbar-right navbar-text" ng-show="authenticated" style="color: white;"> Signed in as {{current_user}} </p>		
+				    <p class="navbar-right navbar-text" ng-show="authenticated" style="color: white;"> Signed in as {{current_user}} </p>	
 				</div>
 			</nav>
 		</div>
@@ -142,6 +237,9 @@
         <audio id="audio3">
             <source src="sounds/Swords_Collide.wav" type="audio/wav">
         </audio>
+        <audio id="audio4">
+            <source src="sounds/Clock_tick.wav" type="audio/wav">
+        </audio>
 
         <!-- Partial view -->
         <div class="col-md-offset-2 col-md-8">
@@ -150,7 +248,7 @@
         </div>
 
         <!-- Samo kad je na map stranici -->
-        <!-- <div id="container" ng-show="authenticated"></div> -->
+        <div id="container" class="animated fadeIn" style="width: 100%; height: 91%; margin-top: 50px;" ng-show="currentPath == '/map'"></div>
 
         <!-- Chat -->
         <div id="chat" ng-show="authenticated">
@@ -172,9 +270,15 @@
         <!-- Bottom navigation bar -->
         <div id='main' class="container2" ng-show="authenticated">
             <nav class="navbar navbar-fluid navbar-default navbar-fixed-bottom">
-                <div class="container">  
+                <div class="container">
+                    <p class="navbar-brand" ng-show="currentPath == '/map'" style="position: fixed; width: 900px; margin-left: 200px; text-align: center; color: white; background-color: black;"> TEKST IGRE! </p>
+                    <!-- Postavljanje tenkova, tekst placeTankButton se prebacuje u Finished placing -->
+                    <button id="placeTankButton" class="btn btn-default" onclick="placeTank()" ng-show="currentPath == '/map'"> Place tank </button>
+                    <button id="removeTankButton" class="btn btn-default" onclick="removeTank()" ng-show="currentPath == '/map'"> Remove tank </button>
+                    <!-- Attack button -->
+                    <button id="attackButton" class="btn btn-default" onclick="attack()" ng-show="currentPath == '/map'"> Attack! </button>
                     <!-- Chat button -->
-                    <button id="chatButton" class="btn btn-default"> Chat </button>
+                    <button id="chatButton" class="btn btn-primary"> Chat </button>
                 </div>
             </nav>
         </div>
@@ -216,8 +320,8 @@
             var series_connector = map.connector(data);
             series_connector.curvature(0.15);
             series_connector.markers({ size: 0});
-            series_connector.hoverMarkers({size: 0});
-            series_connector.selectMarkers({size: 0});
+            series_connector.hoverMarkers({ size: 0 });
+            series_connector.selectMarkers({ size: 0 });
             // var dataSet_lat_long = anychart.data.set([
             //   {lat: -547, long: -3200, name: 1, value: 321},
             // ]);
@@ -280,6 +384,7 @@
             series.geoIdField('id');
             //series.colorScale(anychart.scales.linearColor('#deebf7', '#deebfb'));
             series.hoverFill('#addd8e');
+            //series.hoverFill('red');
             series.labels(false);
 
             map.geoData(anychart.maps['risk_map']);
