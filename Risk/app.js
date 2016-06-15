@@ -25,6 +25,7 @@ serv.listen(3000, function(){
 var io = require('socket.io')(serv, {});
 var socket_list = [];
 var player_list = [];
+var id = 0, id1 = 0;
 
 var Player = function(id1, name1, goal1){
   var self = {
@@ -37,7 +38,17 @@ var Player = function(id1, name1, goal1){
 }
 
 io.on('connection', function(socket){
-  socket.id = parseInt(Math.random() * 1000);
+  if (id == 0)
+  {
+    socket.id = parseInt(Math.random() * 1000);
+    id = socket.id;
+  }
+  else
+  {
+    socket.id = 1000 + parseInt(Math.random() * 1000);
+    id1 = socket.id;
+  }
+
   socket_list[socket.id] = socket;
   var player = Player(socket.id, '', '');
   player_list[socket.id] = player;
@@ -56,11 +67,28 @@ io.on('connection', function(socket){
 
   socket.on('set user name', function(msg){
     player_list[msg.id].name = msg.user;
+    player_list[msg.id].goal = msg.goal;
     io.emit('player names', player_list);
   });
 
-  socket.on('game started', function(){
-    io.emit('game started');
+  socket.on('check game start', function(){
+    io.emit('start game');
+  });
+
+  socket.on('cb1 checked', function(){
+    io.emit('cb1 checked');
+  });
+
+  socket.on('cb1 unchecked', function(){
+    io.emit('cb1 unchecked');
+  });
+
+  socket.on('cb2 checked', function(){
+    io.emit('cb2 checked');
+  });
+
+  socket.on('cb2 unchecked', function(){
+    io.emit('cb2 unchecked');
   });
 });
 
