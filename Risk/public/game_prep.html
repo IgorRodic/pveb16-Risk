@@ -1,19 +1,19 @@
 <div class="clearfix" ng-show="authenticated">
-	<div style="height: 50px; background-color: rgba(245, 245, 245, 0.2); color: white; border-radius: 20px; border: 3px solid white;">
+	<div id="gamePrepTitle">
 		<span class="col-md-3 col-md-offset-3" style="font-size: 30px;"> Players online </span>
 		<span class="col-md-3 pull-right" style="font-size: 30px;"> Start game </span>
 	</div>
-	<form class="jumbotron" style="background-color: rgba(245, 245, 245, 0.2); color: white; border-radius: 20px; border: 3px solid white; margin-top: 50px; margin: 1em auto;">
+	<form class="jumbotron" id="jumbotron">
 		<fieldset class="form-group">
-			<input type="text" id="player1" class="form-control prviIgrac" value="" style="width: 65%; height: 20%; margin-left:35px; background-color: blue; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" disabled="true">
+			<input type="text" id="player1" class="form-control prviIgrac" value="" disabled="true">
 			<input id="cb1" type="checkbox" onclick="checkBox1()">
 		</fieldset>
 		<fieldset class="form-group">
-			<input type="text" id="player2" class="form-control drugiIgrac" value="" style="width: 65%; height: 20%; margin-left:35px; background-color: green; font-size: 25px; color: white; float: left; text-align: center; margin-right: 160px;" disabled="true">
+			<input type="text" id="player2" class="form-control drugiIgrac" value="" disabled="true">
 			<input id="cb2" type="checkbox" onclick="checkBox2()">
 		</fieldset>
 	</form>
 	<button onclick="checkGameStart()" id="startButton" class="btn btn-primary btn-lg col-md-3 col-md-offset-4"> Start Game! </button>
-	<div id="gamePrepInfo" class="col-md-11" style="margin-top: 100px; text-align: center; font-size: 50px; color: white;">
+	<div id="gamePrepInfo" class="col-md-11">
 	</div>
 </div>

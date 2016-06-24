@@ -23,10 +23,14 @@ serv.listen(3000, function(){
 });
 
 var io = require('socket.io')(serv, {});
+
+// Deklaracije promenljivih
 var socket_list = [];
 var player_list = [];
 var id = 0, id1 = 0;
+var curr_phase = 0;
 
+// Deklarisanje "klase" za igraca
 var Player = function(id1, name1, goal1){
   var self = {
     id: id1,
@@ -37,14 +41,14 @@ var Player = function(id1, name1, goal1){
   return self;
 }
 
+// Procesuiranje korisnickih poruka
 io.on('connection', function(socket){
-  if (id == 0)
-  {
+  // Osiguravanje da prvi igrac ima manji id od drugog
+  if (id == 0) {
     socket.id = parseInt(Math.random() * 1000);
     id = socket.id;
   }
-  else
-  {
+  else {
     socket.id = 1000 + parseInt(Math.random() * 1000);
     id1 = socket.id;
   }
@@ -59,6 +63,7 @@ io.on('connection', function(socket){
     delete socket_list[socket.id];
     delete player_list[socket.id];
     io.emit('disconnect', "User disconnected!");
+    io.emit('refresh player names', player_list);
   });
   
   socket.on('chat message', function(msg){
@@ -89,6 +94,30 @@ io.on('connection', function(socket){
 
   socket.on('cb2 unchecked', function(){
     io.emit('cb2 unchecked');
+  });
+
+  socket.on('begin game', function(){
+    curr_phase = 0;
+    io.emit('phase', curr_phase);
+  });
+
+  socket.on('next phase', function(){
+    curr_phase++;
+    if (curr_phase == 4)
+      curr_phase = 0;
+    io.emit('phase', curr_phase);
+  });
+
+  socket.on('place tank', function(player_name, id){
+    io.emit('place tank', player_name, id);
+  });
+
+  socket.on('remove tank', function(player_name, id){
+    io.emit('remove tank', player_name, id);
+  });
+
+  socket.on('attack', function(player_name, id1, id2){
+    io.emit('attack', player_name, id1, id2);
   });
 });
 

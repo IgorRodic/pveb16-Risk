@@ -2,11 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 function isAuthenticated (req, res, next) {
-
-	// Omogucavanje get zahteva svim korisnicima
-	// if(req.method === "GET")
-	// 	return next();
-
 	if (req.isAuthenticated())
 		return next();
 
@@ -15,10 +10,5 @@ function isAuthenticated (req, res, next) {
 };
 
 router.use('/game_prep', isAuthenticated);
-
-// router.route('/game')
-// 	.get(function(req, res){
-
-// 	});
 
 module.exports = router;
