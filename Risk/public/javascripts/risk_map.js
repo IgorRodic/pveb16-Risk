@@ -7,6 +7,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Western Australia",
         "id": "AU.WA"
       },
@@ -489,6 +490,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Eastern Australia",
         "id": "AU.EA"
       },
@@ -1501,6 +1503,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Madagascar",
         "id": "AF.MA"
       },
@@ -1703,6 +1706,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Egypt",
         "id": "AF.EG"
       },
@@ -2073,6 +2077,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Eastern Africa",
         "id": "AF.EA"
       },
@@ -3305,6 +3310,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "South Africa",
         "id": "AF.SA"
       },
@@ -4061,6 +4067,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Congo",
         "id": "AF.CO"
       },
@@ -5283,6 +5290,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "North Africa",
         "id": "AF.NA"
       },
@@ -6191,6 +6199,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Ural",
         "id": "AS.UR"
       },
@@ -7137,6 +7146,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Siberia",
         "id": "AS.SI"
       },
@@ -8561,6 +8571,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Yakutsk",
         "id": "AS.YA"
       },
@@ -9341,6 +9352,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Kamchatka",
         "id": "AS.KA"
       },
@@ -10181,6 +10193,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Irkutsk",
         "id": "AS.IR"
       },
@@ -11239,6 +11252,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "China",
         "id": "AS.CH"
       },
@@ -12499,6 +12513,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Mongolia",
         "id": "AS.MO"
       },
@@ -13169,6 +13184,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Southeast Asia",
         "id": "AS.SA"
       },
@@ -13583,6 +13599,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Afghanistan",
         "id": "AS.AF"
       },
@@ -14477,6 +14494,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "India",
         "id": "AS.IN"
       },
@@ -15605,6 +15623,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Middle East",
         "id": "AS.ME"
       },
@@ -16501,6 +16520,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Great Britain",
         "id": "EU.GB"
       },
@@ -16697,6 +16717,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Iceland",
         "id": "EU.IC"
       },
@@ -16915,6 +16936,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Scandinavia",
         "id": "EU.SC"
       },
@@ -17411,6 +17433,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Western Europe",
         "id": "EU.WE"
       },
@@ -17887,6 +17910,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Southern Europe",
         "id": "EU.SE"
       },
@@ -19035,6 +19059,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Russia",
         "id": "EU.RU"
       },
@@ -20363,6 +20388,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Central Europe",
         "id": "EU.CE"
       },
@@ -21123,6 +21149,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Japan",
         "id": "AS.JA"
       },
@@ -21631,6 +21658,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "New Guinea",
         "id": "AU.NG"
       },
@@ -21931,10 +21959,12 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Quebec",
         "id": "NA.QU"
       },
       "geometry": {
+        
         "type": "MultiPolygon",
         "coordinates": [
           [
@@ -33535,6 +33565,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Ontario",
         "id": "NA.ON"
       },
@@ -54209,6 +54240,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Central America",
         "id": "NA.CA"
       },
@@ -55369,6 +55401,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Western United States",
         "id": "NA.WUS"
       },
@@ -55755,6 +55788,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Eastern United States",
         "id": "NA.EUS"
       },
@@ -56637,6 +56671,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Alberta",
         "id": "NA.ALB"
       },
@@ -61049,6 +61084,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Greenland",
         "id": "NA.GR"
       },
@@ -62381,6 +62417,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Alaska",
         "id": "NA.ALA"
       },
@@ -63509,6 +63546,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Northwest Territory",
         "id": "NA.NT"
       },
@@ -95753,6 +95791,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Indonesia",
         "id": "AU.IN"
       },
@@ -96657,6 +96696,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Argentina",
         "id": "SA.AR"
       },
@@ -97889,6 +97929,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Brazil",
         "id": "SA.BR"
       },
@@ -99221,6 +99262,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Peru",
         "id": "SA.PE"
       },
@@ -100471,6 +100513,7 @@ window['anychart']['maps']['risk_map'] =
     {
       "type": "Feature",
       "properties": {
+        
         "name": "Venezuela",
         "id": "SA.VE"
       },

@@ -103,7 +103,7 @@ io.on('connection', function(socket){
 
   socket.on('next phase', function(){
     curr_phase++;
-    if (curr_phase == 4)
+    if (curr_phase == 6)
       curr_phase = 0;
     io.emit('phase', curr_phase);
   });

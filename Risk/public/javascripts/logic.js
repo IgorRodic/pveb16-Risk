@@ -723,7 +723,6 @@ socket.on('attack', function(player_name, id1, id2){
                 continue;
             else
                 break;
-                
         }
     }
 });
