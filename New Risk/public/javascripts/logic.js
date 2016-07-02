@@ -1,9 +1,8 @@
 var socket = io();
 var USER_NAME;
 var USER_ID;
-var timeout1, timeout2, timeout3, interval1, interval2, interval3;
-var player_list = [];
-var player1_name, player2_name;
+var timeout1, timeout2, timeout3, interval1, interval2;
+
 var tanksRemaining = 0;
 
 $(document).ready(function(){
@@ -247,28 +246,93 @@ var canAttack = function (array) {
     var first = array[0];
     var second = array[1];
 
-    // neighborsMap
-    // teritoriesData
-
     var firstIndex = playersList[first.user].teritories[first.teritory];
     var secondIndex = playersList[second.user].teritories[second.teritory];
 
     var firstId = indexArray[firstIndex];
     var secondId = indexArray[secondIndex];
 
-    console.log(firstId+ " "+secondId);
     var neighbor = neighborsMap[firstId];
-    console.log(neighbor);
-    console.log(neighbor.indexOf(secondId));
     if(neighbor.indexOf(secondId) != -1)
         return true;
     
     return false;
 }
+
+var randomFromOneToSix = function(){
+    return Math.floor(Math.random() * 6) + 1;
+}
+
+var attackTanksCnt = function(tanksCnt){
+    switch (tanksCnt) {
+        case 2: return 1;
+        case 3: return 2;
+        default: return 3;
+    }
+}
+
+var defenceTanksCnt = function(tanksCnt){
+    switch (tanksCnt) {
+        case 1: return 1;
+        case 2: return 2;
+        default: return 3;
+    }
+}
+
+function simulateAttack(attacker,defender)
+{
+    var attackerCnt = playersList[attacker.user].tanksTeritories[attacker.teritory];
+    var defenderCnt = playersList[defender.user].tanksTeritories[defender.teritory];
+
+    var attack = Array(attackTanksCnt(attackerCnt));
+    var defence = Array(defenceTanksCnt(defenderCnt));
+
+    for(let i = 0 ; i < attack.length ; i++)
+        attack[i] = randomFromOneToSix();
+
+    for(let i = 0 ; i < defence.length ; i++)
+        defence[i] = randomFromOneToSix();
+
+    attack.sort(function(a,b) {return b - a});
+    defence.sort(function(a,b) {return b - a});
+
+    var win = false;
+    for(let i = 0; i < attack.length && i < defence.length; i++){
+        //console.log(i+ " " + attackerCnt+  " " + defenderCnt );
+        if(attack[i] > defence[i]){
+            if(--defenderCnt == 0){
+                win = true;
+                break;
+            }
+        }
+        else
+            attackerCnt--;
+    }
+
+    socket.emit('reset tanks',attacker,attackerCnt);
+    if(win)
+        socket.emit("win teritory", attackSelected);
+    else
+        socket.emit('reset tanks',defender,defenderCnt);
+}
+
+var onModalClick = function(){
+    //jquery ne moze da uhvati preko $("#tanksNumberInput")
+    var cnt = parseInt(document.getElementById("tanksNumberInput").value);
+    var max = parseInt(document.getElementById("tanksNumberInput").max);
+
+    if(cnt > max )
+        return false;
+
+
+    socket.emit("move tanks", USER_ID, MOVE_FROM, MOVE_TO, cnt);
+    $('#myModal').modal("hide");
+};
+
 var onClickAttack = function (e) {
     var userId = this.userId;
     var teritoryId = e.markerIndex;
-    
+
     console.log(userId + " " + teritoryId + " " + USER_ID );
 
     if(attackSelected.length == 0){
@@ -283,7 +347,7 @@ var onClickAttack = function (e) {
         else{
             attackSelected[0] = { "user" : userId, "teritory" : teritoryId};
         }
-            
+
     }
     else if(attackSelected.length == 1){
         if(userId == USER_ID){
@@ -297,11 +361,18 @@ var onClickAttack = function (e) {
             attackSelected = [];
         }
         else {
-            socket.emit("win teritory", attackSelected);
+            simulateAttack(attackSelected[0],attackSelected[1])
             attackSelected = [];
         }
     }
 }
+
+socket.on('reset tanks', function(obj, tanksCnt){
+    var userId = obj.user;
+    var teritoryId = obj.teritory;
+    playersList[userId].tanksTeritories[teritoryId] = tanksCnt;
+    playersList[userId].setTanksCnt(playersList[userId].tanksTeritories);
+});
 
 socket.on('attack',function(userId){
     $('#misija').text("Conquer all!");
@@ -326,18 +397,46 @@ socket.on("win teritory",function(array){
     playersList[first.user].tanksTeritories[first.teritory]--;
     playersList[first.user].setTanksCnt(playersList[first.user].tanksTeritories);
     playersList[first.user].tanksMarkers.userId = first.user;
+    playersList[first.user].tanksMarkers.listen("click",onClickAttack);
 
     playersList[second.user].removeTerotiry(second.teritory);
     playersList[second.user].setMarkers(map,teritories);
     playersList[second.user].setTanksCnt(playersList[second.user].tanksTeritories);
     playersList[second.user].tanksMarkers.userId = second.user;
+    playersList[second.user].tanksMarkers.listen("click",onClickAttack);
 
-  });
+    //pomeranje tenkova
+    if(first.user == USER_ID){
+        // postavljanje ogranicenja, mora ostati bar jedan tenk
+        var max = playersList[first.user].tanksTeritories[first.teritory] - 1;
+        $("#tanksNumberInput").attr("max",max);
+
+        //postavljanje teritorija za pomeranje tenkova, sa one sa koje smo napadali
+        // na osvojenu (poslednju dodatu u listu teritorija)
+        MOVE_FROM = first.teritory;
+        MOVE_TO = playersList[USER_ID].tanksTeritories.length - 1;
+
+        $("#myModal").modal();
+    }
+
+});
+
+
+socket.on('move tanks',function (userId, move_from, move_to, cnt) {
+    console.log([userId, move_from, move_to, cnt]);
+    playersList[userId].tanksTeritories[move_from] -= cnt;
+    playersList[userId].tanksTeritories[move_to] += cnt;
+
+    // console.log(playersList[userId].tanksTeritories[move_from]);
+    // console.log(playersList[userId].tanksTeritories[move_to]);
+
+    playersList[userId].setTanksCnt(playersList[userId].tanksTeritories);
+});
 
 function nextPhase() {
     var audioPlayer3 = document.getElementById('audio3'); 
     audioPlayer3.play();
 
-    $('#myModal').modal();
-    socket.emit('next phase');
+    // $('#myModal').modal();
+    // socket.emit('next phase');
 }

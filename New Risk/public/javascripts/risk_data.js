@@ -9,7 +9,10 @@ var playersList = [];
 var isStarted = false;
 var isInitialized = false;
 
-var CURRENT_PLAYER;
+var MOVE_FROM = 0;
+var MOVE_TO = 0;
+
+// var CURRENT_PLAYER;
 var CURRENT_PHASE; 
 var tanksCnt = {
   "2" : 10,

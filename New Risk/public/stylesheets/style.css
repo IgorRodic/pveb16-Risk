@@ -91,7 +91,7 @@ a {
 
 #chat { 
     background-color: white;
-    border: 2px solid black; 
+    border: 2px solid whitesmoke;
     position: fixed; 
     bottom: 0; 
     right: 0; 
@@ -105,14 +105,15 @@ a {
 #chatHeader { 
 	position: fixed; 
 	bottom: 55.1%; 
-	right: 9%;
-	width: 15%;
+	right: 0;
+	width: inherit;
 	background-color: #da0b0b;
-	border: 2px solid black;  
+	border: 2px solid whitesmoke;
 	padding: 2px;
 }
 
-#firstLi { 
+#firstLi {
+	color : white;
 	list-style-type: none; 
 	background: #da0b0b; 
 	text-align: center; 
@@ -135,7 +136,7 @@ a {
 }
 
 #form { 
-	background: #000; 
+	background: whitesmoke;
 	position: fixed; 
 	width: 24%;
 	bottom: 0; 
@@ -148,6 +149,7 @@ a {
 
 #form button { 
 	background: #da0b0b;
+	color: whitesmoke;
 	padding: 2px; 
 	width: 25%;
 }
@@ -258,7 +260,7 @@ a {
 	color: white;
 	text-align: center;
     font-size: 12px;
-    border: 2px solid black;
+    border: 1px solid whitesmoke;
     background-color: #da0b0b;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 	border-radius: 5px;
@@ -275,7 +277,7 @@ a {
 	z-index: 2;
 	text-align: center;
 	color: white; 
-	background-color: #da0b0b;
+	background-color: #5ecaec;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 	border-radius: 50%;
 }
@@ -294,7 +296,7 @@ a {
 	color: white;
 	text-align: center;
     font-size: 12px;
-    border: 2px solid black;
+    border: 1px solid whitesmoke;
     background-color: #da0b0b;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 	border-radius: 5px;

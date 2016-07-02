@@ -126,21 +126,17 @@ io.on('connection', function(socket){
     
   });
 
-  socket.on("win teritory",function(array){
-    io.emit("win teritory",array);
-  });
+    socket.on("win teritory",function(array){
+        io.emit("win teritory",array);
+    });
 
-  socket.on('place tank', function(player_name, id){
-    io.emit('place tank', player_name, id);
-  });
+    socket.on('reset tanks', function(obj, tanksCnt){
+        io.emit('reset tanks', obj, tanksCnt);
+    });
 
-  socket.on('remove tank', function(player_name, id){
-    io.emit('remove tank', player_name, id);
-  });
-
-  socket.on('attack', function(player_name, id1, id2){
-    io.emit('attack', player_name, id1, id2);
-  });
+    socket.on('move tanks',function (userId, move_from, move_to, cnt) {
+        io.emit('move tanks', userId, move_from, move_to, cnt);
+    });
 
 //---------------------------------------------------------------
 
