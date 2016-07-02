@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Game of Risk </title>
+		<script src="javascripts/angular.js"></script>
+		<script src="javascripts/angular-route.js"></script>
+		<script src="javascripts/angular-resource.js"></script>
+        <script src="javascripts/jquery.min.js"></script>
+        <script src="javascripts/socket.io.js"></script>
+        <script src="javascripts/bootstrap.min.js"></script>
+
+        <!-- Mapa -->
+        <script src="javascripts/anymap.min.js"></script>
+        <script src="javascripts/risk_map.js"></script>
+        <script src="javascripts/risk_data.js"></script>
+        <script src="javascripts/player.js"></script>
+        <script src="javascripts/map.js"></script>
+
+		<script src="javascripts/riskApp.js"></script>
+        <script src="javascripts/logic.js"></script>
+
+		<link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/style.css">
+        <link rel="stylesheet" href="stylesheets/animate.css">
+	</head>
+	<body ng-app="riskApp">
+        <!-- Navigation bar -->
+        <div class="navbar navbar-default navbar-fixed-top" ng-show="currentPath != '/map'">
+            <div id="mainControls" class="navbar-header">
+                <a class="navbar-brand" href="#" onclick="playSound();" style="color: white;"> Risk </a>
+                <a class="navbar-brand" ng-show="authenticated" href="#/map" onclick="stopSound();" style="color: white;"> Back to the game! </a>
+                <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul id="loginControls" class="nav navbar-nav navbar-right">
+                    <li><a href="#/login" ng-hide="authenticated" onclick="stopSound();" style="color: white;"> Log in </a> </li>
+                    <li><a href="#/register" ng-hide="authenticated" onclick="stopSound();" style="color: white;"> Register </a></li>
+                    <li><p class="navbar-text" ng-show="authenticated" style="color: white;"> Signed in as {{current_user}} </p></li>
+                    <li><a href="#" onclick="playSound();" ng-show="authenticated" ng-click="signout()" style="color: white;"> Logout </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Misija -->
+        <p class="navbar-brand" id="misija" ng-show="currentPath == '/map'"> </p>
+        <p class="navbar-brand" id="signedInAs" ng-show="currentPath == '/map'"> Signed in as {{current_user}} </p>
+
+        <!-- Zvuk -->
+        <audio id="audio1" autoplay="true">
+            <source src="sounds/Humvee-Stephan_Schutze.wav" type="audio/wav">
+        </audio>
+        <audio id="audio2">
+            <source src="sounds/Mortar-Round.wav" type="audio/wav">
+        </audio>
+        <audio id="audio3">
+            <source src="sounds/Swords_Collide.wav" type="audio/wav">
+        </audio>
+        <audio id="audio4">
+            <source src="sounds/Clock_tick.wav" type="audio/wav">
+        </audio>
+        <audio id="audio5" autoplay="true" loop>
+            <source src="sounds/Battlefield-2-Soundtrack.mp3" type="audio/mp3">
+        </audio>
+        <audio id="audio6">
+            <source src="sounds/Attack.wav" type="audio/wav">
+        </audio>
+        <audio id="audio7">
+            <source src="sounds/Enemy-Down.wav" type="audio/wav">
+        </audio>
+        <audio id="audio8">
+            <source src="sounds/We-Move.ogg" type="audio/ogg">
+        </audio>
+
+        <!-- Partial view -->
+        <div class="col-md-offset-2 col-md-8">
+            <div ng-view>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade " ng-show="currentPath == '/map'" id="myModal" role="dialog"  >
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modeal-header" >Modal Header</h4>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <p>Some text in the modal.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="submit-modal">Ok</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Samo kad je na map stranici -->
+        <div id="container" class="animated fadeIn" ng-show="currentPath == '/map'"></div>
+
+        <!-- Chat -->
+        <div id="chat" ng-show="authenticated" >
+            <ul id="chatHeader">
+                <li id="firstLi">
+                    Game of Risk chat! Have fun!
+                </li>
+            </ul>
+            <ul id="messages">
+                <li> </li>
+            </ul>
+            <div id="form">
+                <input id="msg" autocomplete="off" onkeydown="if (event.keyCode == 13) document.getElementById('btnSend').click()" />
+                <p id="user" hidden="true"> {{current_user}} </p>
+                <button id="btnSend" onclick="submit()"> Send </button>
+            </div>
+        </div>
+
+        <!-- Bottom navigation bar -->
+        <div id='main' class="container2" ng-show="authenticated">
+            <nav class="navbar navbar-fluid navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    <p class="col-md-6 col-sm-5 col-xs-3 col-lg-offset-1 col-md-offset-2 col-sm-offset-2 col-xs-offset-5" id="tekst_igre" ng-show="currentPath == '/map'"> </p>
+                    <!-- Postavljanje tenkova -->
+                    <!-- <button id="placeTankButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="placeTank()"> Place tank </button> -->
+                    <!-- <button id="removeTankButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="removeTank()"> Remove tank </button> -->
+                    <!-- Attack button -->
+                    <!-- <button id="attackButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="attack()" disabled> Attack! </button> -->
+                    <!-- Next phase button -->
+                    <button id="nextPhaseButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="nextPhase()"> Next Phase </button>
+                    <!-- Chat button -->
+                    <button id="chatButton" class="btn btn-primary col-md-2 col-sm-2 col-xs-1"> Chat </button>
+                </div>
+            </nav>
+        </div>
+    </body>
+</html>
