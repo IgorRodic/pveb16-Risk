@@ -22,13 +22,13 @@
 		<link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 		<link rel="stylesheet" href="stylesheets/style.css">
         <link rel="stylesheet" href="stylesheets/animate.css">
+        <link rel="stylesheet" href="stylesheets/hover.css">
 	</head>
 	<body ng-app="riskApp">
         <!-- Navigation bar -->
         <div class="navbar navbar-default navbar-fixed-top" ng-show="currentPath != '/map'">
             <div id="mainControls" class="navbar-header">
                 <a class="navbar-brand" href="#" onclick="playSound();" style="color: white;"> Risk </a>
-                <a class="navbar-brand" ng-show="authenticated" href="#/map" onclick="stopSound();" style="color: white;"> Back to the game! </a>
                 <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -45,9 +45,19 @@
             </div>
         </div>
 
-        <!-- Misija -->
-        <p class="navbar-brand" id="misija" ng-show="currentPath == '/map'"> </p>
-        <p class="navbar-brand" id="signedInAs" ng-show="currentPath == '/map'"> Signed in as {{current_user}} </p>
+        <!-- Game info -->
+        <p class="navbar-brand" ng-show="currentPath == '/map'" id="gameInfo" data-placement="bottom" data-toggle="tooltip" title="Game Info"></p>
+        <ul id="gameInfoList" ng-show="currentPath == '/map'">
+            <li><span id="misija"> </span></li>
+            <li><span id="tenkovi"> </span></li>
+        </ul>
+        
+        <!-- User info -->
+        <p class="navbar-brand" id="signedInAs" ng-show="currentPath == '/map'" data-placement="bottom" data-toggle="tooltip" title="Player info"> {{current_user.charAt(0).toUpperCase()}} </p>
+        <ul id="signedInAsList" ng-show="currentPath == '/map'">
+            <li><span> Signed in as {{current_user}} </span></li>
+            <li><span><a href="#" onclick="playSound();" ng-click="signout()" style="color: white;"> Logout </a></span></li>
+        </ul>
 
         <!-- Zvuk -->
         <audio id="audio1" autoplay="true">
@@ -84,11 +94,10 @@
         <!-- Modal -->
         <div class="modal fade " ng-show="currentPath == '/map'" id="myModal" role="dialog"  >
             <div class="modal-dialog">
-
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="modeal-header" >Modal Header</h4>
+                        <h4 class="modal-title" id="modeal-header">Modal Header</h4>
                     </div>
                     <div class="modal-body" id="modal-body">
                         <p>Some text in the modal.</p>
@@ -106,10 +115,11 @@
         <div id="container" class="animated fadeIn" ng-show="currentPath == '/map'"></div>
 
         <!-- Chat -->
-        <div id="chat" ng-show="authenticated" >
+        <div id="chat" ng-show="authenticated">
             <ul id="chatHeader">
                 <li id="firstLi">
-                    Game of Risk chat! Have fun!
+                    Game of Risk chat! Have fun! 
+                    <button id="chatSlideDown" class="btn"> </button>
                 </li>
             </ul>
             <ul id="messages">
@@ -118,24 +128,19 @@
             <div id="form">
                 <input id="msg" autocomplete="off" onkeydown="if (event.keyCode == 13) document.getElementById('btnSend').click()" />
                 <p id="user" hidden="true"> {{current_user}} </p>
-                <button id="btnSend" onclick="submit()"> Send </button>
+                <button id="btnSend" class="btn" onclick="submit()"> Send </button>
             </div>
         </div>
 
-        <!-- Bottom navigation bar -->
-        <div id='main' class="container2" ng-show="authenticated">
-            <nav class="navbar navbar-fluid navbar-default navbar-fixed-bottom">
+        <!-- Bottom navigation -->
+        <div ng-show="authenticated">
+            <nav class="naMapStrani navbar-fluid navbar-default navbar-fixed-bottom">
                 <div class="container">
-                    <p class="col-md-6 col-sm-5 col-xs-3 col-lg-offset-1 col-md-offset-2 col-sm-offset-2 col-xs-offset-5" id="tekst_igre" ng-show="currentPath == '/map'"> </p>
-                    <!-- Postavljanje tenkova -->
-                    <!-- <button id="placeTankButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="placeTank()"> Place tank </button> -->
-                    <!-- <button id="removeTankButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="removeTank()"> Remove tank </button> -->
-                    <!-- Attack button -->
-                    <!-- <button id="attackButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="attack()" disabled> Attack! </button> -->
+                    <span id="tekst_igre" class="col-md-6 col-md-offset-1 col-sm-5 col-sm-offset-2 col-xs-3 col-xs-offset-2" ng-show="currentPath == '/map'"> All players are placing tanks! </span>
                     <!-- Next phase button -->
                     <button id="nextPhaseButton" class="btn btn-default" ng-show="currentPath == '/map'" onclick="nextPhase()"> Next Phase </button>
                     <!-- Chat button -->
-                    <button id="chatButton" class="btn btn-primary col-md-2 col-sm-2 col-xs-1"> Chat </button>
+                    <button id="chatButton" class="btn col-md-2 col-sm-2 col-xs-1"> </button>
                 </div>
             </nav>
         </div>

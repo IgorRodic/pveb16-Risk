@@ -93,9 +93,9 @@ a {
     background-color: white;
     border: 2px solid black; 
     position: fixed; 
-    bottom: 49px; 
+    bottom: 0; 
     right: 0; 
-    width: 25%; 
+    width: 24%; 
     height: 60%; 
     max-height: 500px;
     overflow-y: auto;
@@ -103,15 +103,18 @@ a {
 }
 
 #chatHeader { 
-	position: absolute; 
-	top: 0; 
-	width: 100%; 
-	align-content: center; 
+	position: fixed; 
+	bottom: 55.1%; 
+	right: 9%;
+	width: 15%;
+	background-color: #da0b0b;
+	border: 2px solid black;  
+	padding: 2px;
 }
 
 #firstLi { 
 	list-style-type: none; 
-	background: red; 
+	background: #da0b0b; 
 	text-align: center; 
 }
 
@@ -134,34 +137,46 @@ a {
 #form { 
 	background: #000; 
 	position: fixed; 
-	width: 100%;
-	bottom: 49px; 
+	width: 24%;
+	bottom: 0; 
 }
 
 #form input { 
-	width: 20%; 
-	padding: 2px; 
+	width: 73%;
+	padding: 2px;
 }
 
 #form button { 
-	background: red; 
+	background: #da0b0b;
 	padding: 2px; 
-	width: 4.5%;
+	width: 25%;
+}
+
+#chatButton {
+	background-image: url('/images/chat-icon.png');
+	position: fixed;
+	bottom: 20px; 
+	right: 20px; 
+	height: 76px; 
+	width: 76px;
+	border-color: white;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.6);
+	border-radius: 50px;
+}
+
+#chatSlideDown {
+	background-image: url('/images/minimize-chat.png');
+	border-radius: 50%;
+	margin: 2px;
+	float: right;
 }
 
 .navbar { 
-	background-color: red; 
-}
-
-#chatButton { 
-	position: fixed; 
-	bottom: 0; 
-	right: 0; 
-	height: 49px; 
+	background-color: #da0b0b;
 }
 
 #chatButton:hover { 
-	background-color: #0099ff; 
+	background-color: #0077ff;
 }
 
 #placeTankButton { 
@@ -177,7 +192,13 @@ a {
 }
 
 #nextPhaseButton { 
-	margin-top: 5px; 
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	color: white;
+	background-color: #da0b0b;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
 }
 
 #placeTankButton:hover, #attackButton:hover, #removeTankButton:hover, #nextPhaseButton:hover { 
@@ -196,60 +217,105 @@ a {
     -moz-animation-duration: 3s;
 }
 
-#startButton { 
-	background-color: red; 
-	border-color: white; 
-	margin-top: 50px; 
-}
-
 #logInButton, #registerButton { 
-	background-color: red; 
-	border-color: white; 
+	background-color: #da0b0b; 
+	border-color: white;
 }
 
 #logInButton:hover, #startButton:hover, #registerButton:hover, #loginLink:hover, #registerLink:hover { 
 	background-color: #ff4d4d; 
 }
 
-#cb1, #cb2 {
-    -moz-appearance: none; 
-    -webkit-appearance: none; 
-    -vendor-appearance: none; 
-    width: 30px; 
-    height: 30px; 	
-    background: white; 
-    border-radius: 5px; 
-    border: 2px solid #555;
-}
-
-#misija {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	text-align: center;
-	color: white; 
-	background-color: black;
+#chatButton:hover, #signedInAs:hover, #gameInfo:hover { 
+	border: 2px solid orange;
 }
 
 #signedInAs {
 	position: fixed;
-	top: 0;
-	right: 0;
-	z-index: 1;
+	top: 15px;
+	right: 30px;
+	width: 50px;
+	height: 50px;
+	z-index: 2;
 	text-align: center;
 	color: white; 
-	background-color: black;
+	background-color: #da0b0b;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border-radius: 50%;
+}
+
+#signedInAsList { 
+    position: fixed; 
+    z-index: 1;
+    list-style-type: none;
+    top: 40px; 
+    right: 50px; 
+    width: 14%; 
+    height: auto;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 2px;
+	color: white;
+	text-align: center;
+    font-size: 12px;
+    border: 2px solid black;
+    background-color: #da0b0b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+}
+
+#gameInfo {
+	background-image: url('/images/gameinfo-icon.png');
+	background-position: -10% 50%; 
+	position: fixed;
+	top: 15px;
+	left: 30px;
+	width: 50px;
+	height: 50px;
+	z-index: 2;
+	text-align: center;
+	color: white; 
+	background-color: #da0b0b;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border-radius: 50%;
+}
+
+#gameInfoList { 
+    position: fixed; 
+    z-index: 1;
+    list-style-type: none;
+    top: 40px; 
+    left: 50px; 
+    width: 14%; 
+    height: auto;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 2px;
+	color: white;
+	text-align: center;
+    font-size: 12px;
+    border: 2px solid black;
+    background-color: #da0b0b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
 }
 
 #tekst_igre {
 	position: fixed;
-	font-size: 26px;
+	bottom: 20px;
+	font-size: 20px;
 	padding: 5px;
 	height: 49px;
+	line-height: 38px;
 	text-align: center; 
 	color: white; 
-	background-color: black;
+	background-color: #da0b0b;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.6);
+	border-radius: 5px;
+}
+
+.naMapStrani {
+	background-color: rgba(0, 0, 0, .0);
 }
 
 .blue { 
@@ -259,65 +325,27 @@ a {
 .green {
 	color: green;
 }
+
 .red{
 	color: red;
 }
+
 .orange{
 	color : orange;
 }
+
 .violet{
 	color:  violet;
 }
+
 .yellow{
 	color : yellow;
-}
-
-
-#jumbotron {
-	background-color: rgba(245, 245, 245, 0.2); 
-	color: white; 
-	border-radius: 20px; 
-	border: 3px solid white; 
-	margin-top: 50px; 
-	margin: 1em auto;
-}
-
-#gamePrepTitle {
-	height: 50px; 
-	background-color: rgba(245, 245, 245, 0.2); 
-	color: white; 
-	border-radius: 20px;
-	border: 3px solid white;
-}
-
-#player1 {
-	width: 65%; 
-	height: 20%; 
-	margin-left:35px;
-	margin-right: 50px; 
-	background-color: blue; 
-	font-size: 25px; 
-	color: white; 
-	float: left; 
-	text-align: center;
-}
-
-#player2 {
-	width: 65%; 
-	height: 20%; 
-	margin-left:35px;
-	margin-right: 50px;  
-	background-color: green; 
-	font-size: 25px; 
-	color: white; 
-	float: left; 
-	text-align: center;
 }
 
 #gamePrepInfo {
 	margin-top: 50px;
 	text-align: center; 
-	font-size: 50px; 
+	font-size: 40px; 
 	color: white;
 }
 
@@ -331,7 +359,7 @@ a {
 }
 
 #loginLink {
-	background-color: red; 
+	background-color: #da0b0b; 
 	border-color: white; 
 	-webkit-animation-delay: 7s; 
 	-vendor-animation-delay: 7s; 
@@ -339,10 +367,16 @@ a {
 }
 
 #registerLink {
-	background-color: red; 
+	background-color: #da0b0b; 
 	border-color: white; 
 	margin-left: 50px;
 	-webkit-animation-delay: 7s; 
 	-vendor-animation-delay: 7s; 
 	-moz-animation-delay: 7s;
+}
+
+#playerList { 
+	list-style-type: none;
+	text-align: center;
+	font-size: 25px;
 }

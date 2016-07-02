@@ -1,7 +1,7 @@
 <form class="form-auth col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-7 col-xs-offset-4" style="margin-top: 100px;" ng-submit="login()">
 	<h2 style="color: white;" class="animated rotateIn"> Log In </h2>
 	<p class="text-warning"> {{error_message}} </p>
-	<input type="username" ng-model="user.username" placeholder="Username" autofocus class="form-control animated rotateIn"><br>
+	<input type="username" ng-model="user.username" placeholder="Username" class="form-control animated rotateIn" autofocus><br>
 	<input type="password" ng-model="user.password" placeholder="Password" class="form-control animated rotateIn"><br>
 	<input type="submit" id="logInButton" value="Log in" class="btn btn-primary animated rotateIn" />
 </form>

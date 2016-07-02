@@ -38,27 +38,12 @@ var randomInt = function(x){
   return Math.floor(Math.random() * x);
 }
 
-
 // Procesuiranje korisnickih poruka
 io.on('connection', function(socket){
-  // ako ima vise od maksimalnog broja igraca izlazimo
-  var id = clientCnt;
-  if( id >= PLAYERS_CNT) return;
-  clientCnt++;
-  var player = {};
-  player.id = id;
-  player.color = playersColor[id];
-  playersList[id] = player;
-  socketList[id] = socket;
-
-
-  io.emit('chat message', "User connected!", player.color);
-  
   socket.on('disconnect', function(){
     delete socketList[id];
     delete playersList[id];
-    io.emit('disconnect', "User disconnected!");
-    io.emit('refresh player names', playersList);
+    //io.emit('disconnect', "User disconnected!");
   });
   
   socket.on('chat message', function(msg){
@@ -66,29 +51,42 @@ io.on('connection', function(socket){
   });
 
   socket.on('set user name', function(msg){
-    //console.log("set user name " + id);
-    playersList[id].name = msg.user;
+    // Provera da li je igrac vec u igri
+    for (var i = 0; i < playersList.length; i++)
+      if (playersList[i].name == msg.user)
+        return;
+
+    // Ako ima vise od maksimalnog broja igraca izlazimo
+    var id = clientCnt;
+    if(id >= PLAYERS_CNT) return;
+    clientCnt++;
+
+    var player = {};
+    player.id = id;
+    player.color = playersColor[id];
+    player.name = msg.user;
+    playersList[id] = player;
+    socketList[id] = socket;
+
     io.emit('player names', playersList);
   });
 
   socket.on('check game start', function(){
     // inicijalizacija teritorija
-    let teritories_shuffle = [];
-    for(let i = 0; i < TERITORIES_CNT; i++) 
+    var teritories_shuffle = [];
+    for(var i = 0; i < TERITORIES_CNT; i++) 
       teritories_shuffle[i] = i;
     
     //podela teritorija
-    for(let i = 0; i < TERITORIES_CNT; i++){
-      let randIndex = randomInt(TERITORIES_CNT - i -1);
-      let tmp = teritories_shuffle[randIndex];
+    for(var i = 0; i < TERITORIES_CNT; i++){
+      var randIndex = randomInt(TERITORIES_CNT - i -1);
+      var tmp = teritories_shuffle[randIndex];
       teritories_shuffle[randIndex] = teritories_shuffle[TERITORIES_CNT - i -1];
       teritories_shuffle[TERITORIES_CNT - i -1] = tmp;
     }
       
     io.emit('start game', playersList, teritories_shuffle);
   });
-
-
 
 //---------------------------------------------------------------
   socket.on('set tanks', function(){ 
@@ -111,7 +109,7 @@ io.on('connection', function(socket){
         io.emit('attack', 1); 
   });
 
-  socket.on('next phase', function(prevPlayer,prevPhase){
+  socket.on('next phase', function(prevPlayer, prevPhase){
     var nextPhase = prev_phase + 1;
     var nextPalayer = prevPlayer; 
     if(next_phase == PHASE_CNT){
@@ -121,9 +119,9 @@ io.on('connection', function(socket){
         nextPalayer = 0;
     }
     switch (nextPhase) {
-      case 0: io.emit('place tank',nextPalayer); break;
-      case 1: io.emit('attack',nextPalayer); break;
-      case 2: io.emit('replace tank',nextPalayer); break;
+      case 0: io.emit('place tank', nextPalayer); break;
+      case 1: io.emit('attack', nextPalayer); break;
+      case 2: io.emit('replace tank', nextPalayer); break;
     }
     
   });
