@@ -40,28 +40,20 @@ var randomInt = function(x){
 
 // Procesuiranje korisnickih poruka
 io.on('connection', function(socket){
-  socket.on('disconnect', function(){
-    delete socketList[id];
-    delete playersList[id];
-    //io.emit('disconnect', "User disconnected!");
-  });
-  
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg.text,player.color, msg.user);
-  });
+  var id = clientCnt;
+  var player = {};
 
   socket.on('set user name', function(msg){
     // Provera da li je igrac vec u igri
     for (var i = 0; i < playersList.length; i++)
-      if (playersList[i].name == msg.user)
+      if (playersList[i] != undefined && playersList[i].name == msg.user)
         return;
 
     // Ako ima vise od maksimalnog broja igraca izlazimo
-    var id = clientCnt;
+    id = clientCnt;
     if(id >= PLAYERS_CNT) return;
     clientCnt++;
 
-    var player = {};
     player.id = id;
     player.color = playersColor[id];
     player.name = msg.user;
@@ -70,6 +62,18 @@ io.on('connection', function(socket){
 
     io.emit('player names', playersList);
   });
+
+  socket.on('disconnect', function(){
+    if (socketList[id] != undefined)
+      delete socketList[id];
+    if (playersList[id] != undefined)
+      delete playersList[id];
+    //io.emit('disconnect', "User disconnected!");
+  });
+  
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg.text, player.color, msg.user);
+  }); 
 
   socket.on('check game start', function(){
     // inicijalizacija teritorija

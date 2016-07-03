@@ -128,8 +128,11 @@ var undefinedNotExists = function (array){
 socket.on('player names', function(players){
     $('#playerList').empty();
     for(var i = 0; i < players.length; i++){
-        if (players[i].name != undefined)
+        if (players[i].name != undefined) {
             $('#playerList').append($('<li><span style="margin: 30px;" class="list-group-item '+ players[i].color +'">'+ players[i].name +'</li>'))
+            if (players[i].name == USER_NAME)
+                document.getElementById('signedInAs').style = "color: " + players[i].color + "";
+        }
     }
     if(undefinedNotExists(players)){
         clearInterval(interval1);
@@ -182,6 +185,9 @@ socket.on('start game', function(players, territories_array){
 });
 
 var initSetIncrease = function(e){
+    var audioPlayer8 = document.getElementById('audio8');
+    audioPlayer8.play();
+
     if(tanksRemaining <= 0) return;
         tanksRemaining--;
 
@@ -221,6 +227,9 @@ socket.on('increase tanks',function(userId,index){
 });
 
 var placeTank = function(e){
+    var audioPlayer8 = document.getElementById('audio8');
+    audioPlayer8.play();
+
     if(tanksRemaining <= 0) return;
     tanksRemaining--;
     socket.emit('increase', USER_ID, e.markerIndex); 
@@ -279,8 +288,11 @@ var defenceTanksCnt = function(tanksCnt){
     }
 }
 
-function simulateAttack(attacker,defender)
+function simulateAttack(attacker, defender)
 {
+    var audioPlayer6 = document.getElementById('audio6');
+    audioPlayer6.play();
+
     var attackerCnt = playersList[attacker.user].tanksTeritories[attacker.teritory];
     var defenderCnt = playersList[defender.user].tanksTeritories[defender.teritory];
 
@@ -301,6 +313,8 @@ function simulateAttack(attacker,defender)
         //console.log(i+ " " + attackerCnt+  " " + defenderCnt );
         if(attack[i] > defence[i]){
             if(--defenderCnt == 0){
+                var audioPlayer7 = document.getElementById('audio7');
+                audioPlayer7.play();
                 win = true;
                 break;
             }
@@ -324,7 +338,6 @@ var onModalClick = function(){
     if(cnt > max )
         return false;
 
-
     socket.emit("move tanks", USER_ID, MOVE_FROM, MOVE_TO, cnt);
     $('#myModal').modal("hide");
 };
@@ -333,18 +346,18 @@ var onClickAttack = function (e) {
     var userId = this.userId;
     var teritoryId = e.markerIndex;
 
-    console.log(userId + " " + teritoryId + " " + USER_ID );
+    console.log(userId + " " + teritoryId + " " + USER_ID);
 
     if(attackSelected.length == 0){
         if(userId != USER_ID){
             console.log("Choose your teritory!");
             return;
         }
-        else if(playersList[userId].tanksTeritories < 2){
+        else if(playersList[userId].tanksTeritories[teritoryId] < 2){
             console.log("You don't have enough tanks to attack!");
             return;
         }
-        else{
+        else {
             attackSelected[0] = { "user" : userId, "teritory" : teritoryId};
         }
 
@@ -361,7 +374,7 @@ var onClickAttack = function (e) {
             attackSelected = [];
         }
         else {
-            simulateAttack(attackSelected[0],attackSelected[1])
+            simulateAttack(attackSelected[0], attackSelected[1])
             attackSelected = [];
         }
     }
@@ -420,7 +433,6 @@ socket.on("win teritory",function(array){
     }
 
 });
-
 
 socket.on('move tanks',function (userId, move_from, move_to, cnt) {
     console.log([userId, move_from, move_to, cnt]);
