@@ -368,9 +368,6 @@ socket.on('attack',function(userId, currentPhase){
     
     // omogucavamo da prvi igrac postavlja tenkove
     // u sledecem krugu
-    if(isFirstRound)
-        isFirstRound = false;
-
     $('#misija').text("Conquer all!");
     $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
     
@@ -382,6 +379,9 @@ socket.on('attack',function(userId, currentPhase){
     CURRENT_PHASE = currentPhase;
     document.getElementById('tekst_igre').innerHTML = playersList[userId].name + " is attacking!";
     if(USER_ID != userId) return;
+
+    if(isFirstRound)
+        isFirstRound = false;
     for(var i = 0 ;i < PLAYERS_CNT ; i++)
         playersList[i].tanksMarkers.listen("click",onClickAttack);
 });
