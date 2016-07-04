@@ -29,7 +29,7 @@ const PHASE_CNT = 4;
 const TERITORIES_CNT = 42;
 const PLAYERS_CNT = 2;
 var clientCnt = 0;
-var playersColor = ["blue","red","green","yellow","violet","orange"];
+var playersColor = ["blue", "red", "green", "yellow", "violet","orange"];
 var playersList = [];
 var socketList = [];
 var canBegin = Array(PLAYERS_CNT).fill(false);
@@ -54,20 +54,58 @@ io.on('connection', function(socket){
     if(id >= PLAYERS_CNT) return;
     clientCnt++;
 
+    //console.log(clientCnt);
+
     player.id = id;
     player.color = playersColor[id];
     player.name = msg.user;
     playersList[id] = player;
-    socketList[id] = socket;
+
+    var socket_tmp = {};
+    socket_tmp.id = socket.id;
+    socket_tmp.player = id;
+    socketList[id] = socket_tmp;
 
     io.emit('player names', playersList);
   });
 
   socket.on('disconnect', function(){
-    if (socketList[id] != undefined)
-      delete socketList[id];
-    if (playersList[id] != undefined)
-      delete playersList[id];
+    for (var i = 0; i < clientCnt; i++) {
+      //console.log("Test: " + socketList[i].id + " " + socket.id + " " + socketList[i].player);
+      if (socketList[i].id == socket.id) {
+        socket_id = socketList[i].id;
+        player_id = socketList[i].player;
+        break;
+      }
+    }
+
+    if (socketList[socket_id] != undefined)
+      delete socketList[socket_id];
+    if (playersList[player_id] != undefined){
+      delete playersList[player_id];
+      clientCnt--;
+    }
+    //console.log(clientCnt);
+    //io.emit('disconnect', "User disconnected!");
+  });
+
+  socket.on('custom disconnect', function(user){
+    for (var i = 0; i < clientCnt; i++) {
+      //console.log("Test: " + socketList[i].id + " " + socket.id + " " + socketList[i].player);
+      if (socketList[i].id == socket.id) {
+        socket_id = socketList[i].id;
+        player_id = socketList[i].player;
+        break;
+      }
+    }
+
+    if (socketList[socket_id] != undefined)
+      delete socketList[socket_id];
+    if (playersList[player_id] != undefined){
+      delete playersList[player_id];
+      clientCnt--;
+    }
+    //console.log(clientCnt);
     //io.emit('disconnect', "User disconnected!");
   });
   
@@ -92,7 +130,6 @@ io.on('connection', function(socket){
     io.emit('start game', playersList, teritories_shuffle);
   });
 
-//---------------------------------------------------------------
   socket.on('set tanks', function(){ 
     io.emit('inital set');
   });
@@ -122,7 +159,7 @@ io.on('connection', function(socket){
         nextPalayer = 0;
     }
 
-    console.log(nextPalayer+ " " + nextPhase);
+    //console.log(nextPalayer+ " " + nextPhase);
 
     switch (nextPhase) {
       case 0: io.emit('replace tank', nextPalayer, nextPhase); break;
@@ -130,23 +167,23 @@ io.on('connection', function(socket){
       case 2: io.emit('attack', nextPalayer, nextPhase); break;
       case 3: io.emit('replace tank', nextPalayer, nextPhase); break;
     }
-    
   });
 
-    socket.on("win teritory",function(array){
-        io.emit("win teritory",array);
-    });
+  socket.on("win teritory", function(array){
+      io.emit("win teritory", array);
+  });
 
-    socket.on('reset tanks', function(obj, tanksCnt){
-        io.emit('reset tanks', obj, tanksCnt);
-    });
+  socket.on("win game", function(user){
+      io.emit("win game", user);
+  });
 
-    socket.on('move tanks',function (userId, move_from, move_to, cnt) {
-        io.emit('move tanks', userId, move_from, move_to, cnt);
-    });
+  socket.on('reset tanks', function(obj, tanksCnt){
+      io.emit('reset tanks', obj, tanksCnt);
+  });
 
-//---------------------------------------------------------------
-
+  socket.on('move tanks', function (userId, move_from, move_to, cnt) {
+      io.emit('move tanks', userId, move_from, move_to, cnt);
+  });
 });
 
 app.set('views', path.join(__dirname, 'views'));

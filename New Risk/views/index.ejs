@@ -40,7 +40,7 @@
                     <li><a href="#/login" ng-hide="authenticated" onclick="stopSound();" style="color: white;"> Log in </a> </li>
                     <li><a href="#/register" ng-hide="authenticated" onclick="stopSound();" style="color: white;"> Register </a></li>
                     <li><p class="navbar-text" ng-show="authenticated" style="color: white;"> Signed in as {{current_user}} </p></li>
-                    <li><a href="#" onclick="playSound();" ng-show="authenticated" ng-click="signout()" style="color: white;"> Logout </a></li>
+                    <li><a href="#" onclick="disconnect();" ng-show="authenticated" ng-click="signout()" style="color: white;"> Logout </a></li>
                 </ul>
             </div>
         </div>
@@ -56,7 +56,7 @@
         <p class="navbar-brand" id="signedInAs" ng-show="currentPath == '/map'" data-placement="bottom" data-toggle="tooltip" title="Player info"> {{current_user.charAt(0).toUpperCase()}} </p>
         <ul id="signedInAsList" ng-show="currentPath == '/map'">
             <li><span> Signed in as {{current_user}} </span></li>
-            <li><span><a href="#" onclick="playSound();" ng-click="signout()" style="color: white;"> Logout </a></span></li>
+            <li><span><a href="#" onclick="disconnect();" ng-click="signout()" style="color: white;"> Logout </a></span></li>
         </ul>
 
         <!-- Zvuk -->
