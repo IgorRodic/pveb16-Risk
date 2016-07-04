@@ -25,7 +25,7 @@ serv.listen(3000, function(){
 var io = require('socket.io')(serv, {});
 
 // Deklaracije promenljivih
-const PHASE_CNT = 3;
+const PHASE_CNT = 4;
 const TERITORIES_CNT = 42;
 const PLAYERS_CNT = 2;
 var clientCnt = 0;
@@ -108,24 +108,27 @@ io.on('connection', function(socket){
       for(var i = 0 ;i < PLAYERS_CNT ; i++)
         if(!canBegin[i])
           cb = false;
-
       if(cb)
-        io.emit('attack', 1); 
+        io.emit('attack', 0, 2);
   });
 
   socket.on('next phase', function(prevPlayer, prevPhase){
-    var nextPhase = prev_phase + 1;
+    var nextPhase = prevPhase + 1;
     var nextPalayer = prevPlayer; 
-    if(next_phase == PHASE_CNT){
-      next_phase = 0;
+    if(nextPhase == PHASE_CNT){
+      nextPhase = 0;
       nextPalayer++;
       if(nextPalayer == PLAYERS_CNT)
         nextPalayer = 0;
     }
+
+    console.log(nextPalayer+ " " + nextPhase);
+
     switch (nextPhase) {
-      case 0: io.emit('place tank', nextPalayer); break;
-      case 1: io.emit('attack', nextPalayer); break;
-      case 2: io.emit('replace tank', nextPalayer); break;
+      case 0: io.emit('replace tank', nextPalayer, nextPhase); break;
+      case 1: io.emit('place tank', nextPalayer, nextPhase); break;
+      case 2: io.emit('attack', nextPalayer, nextPhase); break;
+      case 3: io.emit('replace tank', nextPalayer, nextPhase); break;
     }
     
   });

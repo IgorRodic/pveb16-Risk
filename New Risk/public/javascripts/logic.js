@@ -168,17 +168,17 @@ socket.on('start game', function(players, territories_array){
     timeout3 = setTimeout(function() { window.location.href = 'http://localhost:3000/#/map'; }, 13500); 
 
     // Odbrojavanje do pocetka igre
-    var i = 10;
+    var k = 10;
     interval2 = setInterval(function() { 
-        document.getElementById('gamePrepInfo').innerHTML = i;
+        document.getElementById('gamePrepInfo').innerHTML = k;
         var audioPlayer4 = document.getElementById('audio4');
         audioPlayer4.play();
-        if (i <= 0)
+        if (k <= 0)
         {
             clearInterval(interval2);
             document.getElementById('gamePrepInfo').innerHTML = "The game will begin shortly, have fun!";
         }
-        i--;
+        k--;
     }, 1000);
 
     socket.emit('set tanks');    
@@ -190,21 +190,20 @@ var initSetIncrease = function(e){
 
     if(tanksRemaining <= 0) return;
         tanksRemaining--;
-
-    // console.log(tanksRemaining);
-    // console.log(USER_ID+ "  " + e.markerIndex);
+    
     socket.emit('increase', USER_ID, e.markerIndex); 
     $('#misija').text("Conquer all!");
     $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
     if(tanksRemaining == 0){
     	socket.emit('can begin',USER_ID);
-        playersList[USER_ID].tanksMarkers.unlisten("click");
+        playersList[USER_ID].tanksMarkers.unlisten("click",initSetIncrease);
     }
 };
 
 socket.on('inital set',function(){
     $('#misija').text("Conquer all!");
     $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
+    $('#nextPhaseButton').prop("disabled",true);
     if(isInitialized)
         return;
         
@@ -215,6 +214,7 @@ socket.on('inital set',function(){
         if(playersList[i].name == USER_NAME){
             USER_ID = i;
             playersList[i].tanksMarkers.listen("click",initSetIncrease);
+            
         }
     }
 });
@@ -224,29 +224,6 @@ socket.on('increase tanks',function(userId,index){
     playersList[userId].tanksTeritories[index]++;
     //ispisivanje 
     playersList[userId].setTanksCnt(playersList[userId].tanksTeritories)
-});
-
-var placeTank = function(e){
-    var audioPlayer8 = document.getElementById('audio8');
-    audioPlayer8.play();
-
-    if(tanksRemaining <= 0) return;
-    tanksRemaining--;
-    socket.emit('increase', USER_ID, e.markerIndex); 
-    if(tanksRemaining == 0){
-    	socket.emit('next phase',USER_ID,CURRENT_PHASE);
-        playersList[USER_ID].tanksMarkers.unlisten("click");
-    }
-};
-
-socket.on('place tank',function(userId){
-    $('#misija').text("Conquer all!");
-    $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
-    CURRENT_PHASE = 0;
-    if(USER_ID != userId) return;
-    document.getElementById('tekst_igre').innerHTML = USER_NAME + " is placing tanks!";
-    tanksRemaining += 5;
-    playersList[userId].tanksMarkers.listen("click",placeTank);
 });
 
 var attackSelected = [];
@@ -387,16 +364,27 @@ socket.on('reset tanks', function(obj, tanksCnt){
     playersList[userId].setTanksCnt(playersList[userId].tanksTeritories);
 });
 
-socket.on('attack',function(userId){
+socket.on('attack',function(userId, currentPhase){
+    
+    // omogucavamo da prvi igrac postavlja tenkove
+    // u sledecem krugu
+    if(isisFirstRound)
+        isFirstRound = false;
+
     $('#misija').text("Conquer all!");
     $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
-    CURRENT_PHASE = 1;
+    
+    if(userId == USER_ID)
+        $('#nextPhaseButton').prop("disabled",false);
+    else
+        $('#nextPhaseButton').prop("disabled",true);
+    
+    CURRENT_PHASE = currentPhase;
     document.getElementById('tekst_igre').innerHTML = playersList[userId].name + " is attacking!";
     if(USER_ID != userId) return;
     for(var i = 0 ;i < PLAYERS_CNT ; i++)
         playersList[i].tanksMarkers.listen("click",onClickAttack);
 });
-
 
 socket.on("win teritory",function(array){
     var first= array[0];
@@ -445,10 +433,101 @@ socket.on('move tanks',function (userId, move_from, move_to, cnt) {
     playersList[userId].setTanksCnt(playersList[userId].tanksTeritories);
 });
 
+var placeTank = function(e){
+    var audioPlayer8 = document.getElementById('audio8');
+    audioPlayer8.play();
+
+    if(tanksRemaining <= 0) return;
+    tanksRemaining--;
+    socket.emit('increase', USER_ID, e.markerIndex);
+    $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
+    if(tanksRemaining == 0){
+        socket.emit('next phase',USER_ID,CURRENT_PHASE);
+        playersList[USER_ID].tanksMarkers.unlisten("click",placeTank);
+    }
+};
+
+socket.on('place tank',function(userId, currentPhase){
+    $('#nextPhaseButton').prop("disabled",true);
+    $('#misija').text("Conquer all!");  
+    CURRENT_PHASE = currentPhase;
+    
+    document.getElementById('tekst_igre').innerHTML = playersList[userId].name + " is placing tanks!";
+    if(USER_ID != userId) return;
+    // u prvoj rundi se preskace postavljanje tenkova
+    if(isFirstRound){
+        isFirstRound = false;
+        socket.emit('next phase',USER_ID, CURRENT_PHASE);
+        return;
+    } 
+    // dodavanje tenkova, u narednoj verziji dodati tenkove na osnovu
+    // osvojenih kontinenata
+    tanksRemaining += Math.floor(playersList[userId].tanksTeritories.length / 3);
+    $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
+    playersList[userId].tanksMarkers.listen("click",placeTank);
+});
+
+var replaceSelected = [];
+
+var onClickReplace = function (e) {
+
+    var teritoryId = e.markerIndex;
+    console.log(teritoryId);
+
+    if(replaceSelected.length == 0)
+        replaceSelected[0] = teritoryId;
+        
+    else if(replaceSelected.length == 1){
+        if(teritoryId == replaceSelected[0]){
+            console.log("Choose some other teritory!");
+            replaceSelected = [];
+            return;
+        }
+        replaceSelected[1] = teritoryId;
+        var max = playersList[USER_ID].tanksTeritories[replaceSelected[0]] - 1;
+        $("#tanksNumberInput").attr("max",max);
+
+        MOVE_FROM = replaceSelected[0];
+        MOVE_TO = replaceSelected[1];
+
+        var fromId =  playersList[USER_ID].teritories[replaceSelected[0]];
+        var nameFrom = tanksMarkerData[fromId].name;
+
+        var toId =  playersList[USER_ID].teritories[replaceSelected[1]];
+        var nameTo = tanksMarkerData[toId].name;
+
+        console.log("Move from " + nameFrom + " to " + nameTo);
+        replaceSelected = [];
+        $('#myModal').modal();
+    }
+}
+
+socket.on('replace tank',function(userId, currentPhase){
+    if(userId == USER_ID)
+        $('#nextPhaseButton').prop("disabled",false);
+    else
+        $('#nextPhaseButton').prop("disabled",true);
+
+    $('#misija').text("Conquer all!");
+    $('#tenkovi').text("Tanks remaining: " + tanksRemaining);
+    CURRENT_PHASE = currentPhase;
+    
+    document.getElementById('tekst_igre').innerHTML = playersList[userId].name + " is replacing tanks!";
+    if(USER_ID != userId) return;
+    playersList[userId].tanksMarkers.listen("click",onClickReplace);
+});
+
 function nextPhase() {
     var audioPlayer3 = document.getElementById('audio3'); 
     audioPlayer3.play();
 
-    // $('#myModal').modal();
-    // socket.emit('next phase');
+    if(CURRENT_PHASE == 2){ // attack phase
+        for(var i = 0 ;i < PLAYERS_CNT ; i++)
+            playersList[i].tanksMarkers.unlisten("click",onClickAttack);
+    }
+    else if(CURRENT_PHASE == 0 || CURRENT_PHASE == 3){ // replace 
+        playersList[USER_ID].tanksMarkers.unlisten("click",onClickReplace);
+    }
+
+    socket.emit('next phase',USER_ID, CURRENT_PHASE);
 }

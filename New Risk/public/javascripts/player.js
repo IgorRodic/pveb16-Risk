@@ -29,14 +29,14 @@ var Player = function (name,color) {
         this.tanksMarkers.type("square");
         this.tanksMarkers.fill(this.tanksImg);
         this.tanksMarkers.hoverFill(this.tanksImg);
-        this.tanksMarkers.size(15);
-        this.tanksMarkers.hoverSize(15);
+        this.tanksMarkers.size(19);
+        this.tanksMarkers.hoverSize(19);
         this.tanksMarkers.selectionMode('none');
 
         this.markersTooltip = this.tanksMarkers.tooltip();
         this.markersTooltip.title(false);
         this.markersTooltip.separator(false);
-        this.markersTooltip.fontSize(14);
+        this.markersTooltip.fontSize(15);
         this.markersTooltip.textFormatter(function(e){
             return this.name;
         });

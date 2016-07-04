@@ -8,6 +8,7 @@ var playersList = [];
 
 var isStarted = false;
 var isInitialized = false;
+var isFirstRound = true;
 
 var MOVE_FROM = 0;
 var MOVE_TO = 0;
@@ -53,48 +54,48 @@ var connectorData = [
 ];
 
 var tanksMarkerData = [
-    {lat: -15.5, long: 62 , "id": "AU.WA" },
-    {lat: -15, long: 75 , "id": "AU.EA" },
-    {lat: -12, long: 20 , "id": "AF.MA" },
-    {lat: 14, long: 6 , "id": "AF.EG" },
-    {lat: 6, long: 12 , "id": "AF.EA" },
-    {lat: -14, long: 7 , "id": "AF.SA" },
-    {lat: -1, long: 6 , "id": "AF.CO" },
-    {lat: 11, long: -7 , "id": "AF.NA" },
-    {lat: 37, long: 37 , "id": "AS.UR" },
-    {lat: 40, long: 50 , "id": "AS.SI" },
-    {lat: 45, long: 67 , "id": "AS.YA" },
-    {lat: 42, long: 84 , "id": "AS.KA" },
-    {lat: 36, long: 62 , "id": "AS.IR" },
-    {lat: 20, long: 49 , "id": "AS.CH" },
-    {lat: 26, long: 63 , "id": "AS.MO" },
-    {lat: 8.5, long: 51 , "id": "AS.SA" },
-    {lat: 26, long: 30 , "id": "AS.AF" },
-    {lat: 13, long: 37 , "id": "AS.IN" },
-    {lat: 19, long: 18 , "id": "AS.ME" },
-    {lat: 32.5, long: -8 , "id": "EU.GB" },
-    {lat: 42, long: -16.8 , "id": "EU.IC" },
-    {lat: 41.5, long: 2.5 , "id": "EU.SC" },
-    {lat: 25.5, long: -5.5 , "id": "EU.WE" },
-    {lat: 24.8, long: 6.3 , "id": "EU.SE" },
-    {lat: 35, long: 16.5 , "id": "EU.RU" },
-    {lat: 31, long: 1.5 , "id": "EU.CE" },
-    {lat: 19, long: 76 , "id": "AS.JA" },
-    {lat: -3.3, long: 73 , "id": "AU.NG" },
-    {lat: 32, long: -46 , "id": "NA.QU" },
-    {lat: 33, long: -59 , "id": "NA.ON" },
-    {lat: 12, long: -63 , "id": "NA.CA" }, 
-    {lat: 23, long: -68 , "id": "NA.WUS" },
-    {lat: 23, long: -56 , "id": "NA.EUS" },
-    {lat: 33, long: -72 , "id": "NA.ALB" },
-    {lat: 53, long: -29 , "id": "NA.GR" },
-    {lat: 43, long: -90 , "id": "NA.ALA" },
-    {lat: 42, long: -72 , "id": "NA.NT" },
-    {lat: -0.4, long: 57.4 , "id": "AU.IN" },
-    {lat: -22, long: -44 , "id": "SA.AR" },
-    {lat: -6, long: -35 , "id": "SA.BR" },
-    {lat: -11, long: -42 , "id": "SA.PE" },
-    {lat: 2.7, long: -44.7 , "id": "SA.VE" }
+    {lat: -15.5, long: 62 , "id": "AU.WA" ,"name": "Western Australia"},
+    {lat: -15, long: 75 , "id": "AU.EA" ,"name": "Eastern Australia"},
+    {lat: -12, long: 20 , "id": "AF.MA" ,"name": "Madagascar"},
+    {lat: 14, long: 6 , "id": "AF.EG" ,"name": "Egypt"},
+    {lat: 6, long: 12 , "id": "AF.EA" ,"name": "Eastern Africa"},
+    {lat: -14, long: 7 , "id": "AF.SA" ,"name": "South Africa"},
+    {lat: -1, long: 6 , "id": "AF.CO" ,"name": "Congo"},
+    {lat: 11, long: -7 , "id": "AF.NA" ,"name": "North Africa"},
+    {lat: 37, long: 37 , "id": "AS.UR" ,"name": "Ural"},
+    {lat: 40, long: 50 , "id": "AS.SI" ,"name": "Siberia"},
+    {lat: 45, long: 67 , "id": "AS.YA" ,"name": "Yakutsk"},
+    {lat: 42, long: 84 , "id": "AS.KA" ,"name": "Kamchatka"},
+    {lat: 36, long: 62 , "id": "AS.IR" ,"name": "Irkutsk"},
+    {lat: 20, long: 49 , "id": "AS.CH" ,"name": "China"},
+    {lat: 26, long: 63 , "id": "AS.MO" ,"name": "Mongolia"},
+    {lat: 8.5, long: 51 , "id": "AS.SA" ,"name": "Southeast Asia"},
+    {lat: 26, long: 30 , "id": "AS.AF" ,"name": "Afghanistan"},
+    {lat: 13, long: 37 , "id": "AS.IN" ,"name": "India"},
+    {lat: 19, long: 18 , "id": "AS.ME" ,"name": "Middle East"},
+    {lat: 32.5, long: -8 , "id": "EU.GB" ,"name": "Great Britain"},
+    {lat: 42, long: -16.8 , "id": "EU.IC" ,"name": "Iceland"  },
+    {lat: 41.5, long: 2.5 , "id": "EU.SC" ,"name": "Scandinavia" },
+    {lat: 25.5, long: -5.5 , "id": "EU.WE" ,"name": "Western Europe" },
+    {lat: 24.8, long: 6.3 , "id": "EU.SE" ,"name": "Southern Europe"},
+    {lat: 35, long: 16.5 , "id": "EU.RU" ,"name": "Russia"},
+    {lat: 31, long: 1.5 , "id": "EU.CE" ,"name": "Central Europe"},
+    {lat: 19, long: 76 , "id": "AS.JA" ,"name": "Japan"},
+    {lat: -3.3, long: 73 , "id": "AU.NG" ,"name": "New Guinea"},
+    {lat: 32, long: -46 , "id": "NA.QU" ,"name": "Quebec"},
+    {lat: 33, long: -59 , "id": "NA.ON" ,"name": "Ontario"},
+    {lat: 12, long: -63 , "id": "NA.CA" ,"name": "Central America"}, 
+    {lat: 23, long: -68 , "id": "NA.WUS" ,"name": "Western United States"},
+    {lat: 23, long: -56 , "id": "NA.EUS" ,"name": "Eastern United States"},
+    {lat: 33, long: -72 , "id": "NA.ALB" ,"name": "Alberta"},
+    {lat: 53, long: -29 , "id": "NA.GR" ,"name": "Greenland"},
+    {lat: 43, long: -90 , "id": "NA.ALA" ,"name": "Alaska"},
+    {lat: 42, long: -72 , "id": "NA.NT" ,"name": "Northwest Territory" },
+    {lat: -0.4, long: 57.4 , "id": "AU.IN" ,"name": "Indonesia"},
+    {lat: -22, long: -44 , "id": "SA.AR" ,"name": "Argentina"},
+    {lat: -6, long: -35 , "id": "SA.BR" ,"name": "Brazil"},
+    {lat: -11, long: -42 , "id": "SA.PE" ,"name": "Peru"},
+    {lat: 2.7, long: -44.7 , "id": "SA.VE","name": "Venezuela" }
 ];
 
 var teritoriesData = [
@@ -268,8 +269,8 @@ var neighborsMap = {
     "NA.QU" : ["NA.GR","NA.ON","NA.EUS"], 
     "NA.ON" : ["NA.NT","NA.ALB","NA.EUS","NA.WUS","NA.QU","NA.GR"], 
     "NA.CA" : ["NA.EUS","NA.WUS","SA.VE"], 
-    "NA.WUS" : ["NA.CE","NA.EUS","NA.ALB","NA.ON"],
-    "NA.EUS" : ["NA.CE","NA.WUS","NA.ON","NA.QU"],
+    "NA.WUS" : ["NA.CA","NA.EUS","NA.ALB","NA.ON"],
+    "NA.EUS" : ["NA.CA","NA.WUS","NA.ON","NA.QU"],
     "NA.ALB" : ["NA.ALA","NA.WUS","NA.ON","NA.NT"],
     "NA.GR" : ["NA.NT","NA.ON","NA.QU","EU.IC"], 
     "NA.ALA" : ["AS.KA","NA.NT","NA.ALB"],
@@ -278,7 +279,7 @@ var neighborsMap = {
     "SA.AR" : ["SA.BR","SA.PE"], 
     "SA.BR" : ["SA.AR","SA.PE","SA.VE","AF.NA"], 
     "SA.PE" : ["SA.BR","SA.AR","SA.VE"],
-    "SA.VE" : ["SA.BR","SA.PE","NA.CE"]
+    "SA.VE" : ["SA.BR","SA.PE","NA.CA"]
 }
 
 
