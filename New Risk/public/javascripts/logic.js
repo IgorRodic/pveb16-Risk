@@ -368,7 +368,7 @@ socket.on('attack',function(userId, currentPhase){
     
     // omogucavamo da prvi igrac postavlja tenkove
     // u sledecem krugu
-    if(isisFirstRound)
+    if(isFirstRound)
         isFirstRound = false;
 
     $('#misija').text("Conquer all!");
